@@ -1,0 +1,52 @@
+{
+  "timeZone": "America/New_York",
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
+  "dependencies": {
+    "enabledAdvancedServices": [
+      {
+        "userSymbol": "Gmail",
+        "serviceId": "gmail",
+        "version": "v1"
+      }
+    ]
+  },
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/gmail.addons.execute",
+    "https://www.googleapis.com/auth/gmail.addons.current.message.readonly",
+    "https://www.googleapis.com/auth/script.locale",
+    "https://www.googleapis.com/auth/script.external_request"
+  ],
+  "urlFetchWhitelist": [
+    "https://api.openai.com/v1/responses"
+  ],
+  "addOns": {
+    "common": {
+      "name": "summE 💌",
+      "logoUrl": "https://teddydidit.com/development/summe/summe-logo.png",
+      "layoutProperties": {
+        "primaryColor": "#3f00ab",
+        "secondaryColor": "#ff0060"
+      }
+    },
+    "gmail": {
+      "homepageTrigger": {
+        "runFunction": "onHomepage"
+      },
+      "contextualTriggers": [
+        {
+          "unconditional": {},
+          "onTriggerFunction": "onGmailMessageOpen"
+        },
+        {
+          "unconditional": {},
+          "onTriggerFunction": "onGmailThreadOpen"
+        }
+      ],
+      "openLinkUrlPrefixes": [
+        "https://script.googleusercontent.com/",
+        "https://teddydidit.com/"
+      ]
+    }
+  }
+}
