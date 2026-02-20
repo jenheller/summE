@@ -159,7 +159,7 @@ var CL_MBD = new RegExp(`${P_MD.source}{2}${P_AC1.source}${P_MD.source}{2}`, `g`
 var CL_MBT = new RegExp(`${P_MD.source}{3}${P_AC1.source}${P_MD.source}{3}`, `g`);
 var CL_MIT = new RegExp(`${P_MD.source}${P_AC1.source}${P_MD.source}`, `g`);
 var CL_MSK = new RegExp(`~~${P_AC1.source}~~`, "g");
-var CL_PVS = new RegExp(`(${P_LS.source})(?:(?:(?:(?:On\\s${P_ULL.source}{1,5},\\s${P_ULL.source}{1,5}\\s\\d{1,2},\\s\\d{4},?\\s(?:at\\s)?\\d{1,2}:\\d{2}\\s[AP]M,?\\s${P_EML.source}\\swrote${P_WS.source})|(?:(?:(?:Begin\\s|${P_WS.source}-{2,10}${P_WS.source})[Ff]orwarded|[Oo]riginal)\\s[Mm]essage))(?:${P_WS.source}-{2,6}${P_WS.source}|:))|(?:${P_BDO.source}|)From${P_WS.source}${P_EML.source})${P_LE.source}${P_ACN.source}$`);
+var CL_PVS = new RegExp(`(${P_LS.source})(?:(?:(?:(?:On(?:\\s${P_ULL.source}{1,5},)?\\s${P_ULL.source}{1,10}\\s\\d{1,2},\\s\\d{4},?\s(?:at\\s)?\\d{1,2}:\\d{1,2}(?:\\:\\d{1,2})?\\s[AP]M(?:\\s[A-Z]{3})?,?\\s${P_EML.source}\\swrote${P_WS.source})|(?:(?:(?:Begin\\s|${P_WS.source}-{2,10}${P_WS.source})[Ff]orwarded|[Oo]riginal)\\s[Mm]essage))(?:${P_WS.source}-{2,6}${P_WS.source}|:))|(?:${P_BDO.source}|)From${P_WS.source}${P_EML.source})${P_LE.source}${P_ACN.source}$`);
 var CL_TFG = new RegExp(`<(figure|figcaption)${P_TSX.source}${P_ACN.source}${P_TCC.source}`, `gi`);
 var CL_TFR = new RegExp(`fr-original-style${P_SEQ.source}"[^">]*(?:"[^">]*"[^">]*)*"`, `gi`);
 var CL_TDE = new RegExp(`${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}(?<ej1>${P_WS.source}(?:${P_EJ.source}|${P_BL.source}))${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}`, `gui`);
@@ -417,7 +417,7 @@ function cHC(htm, clL) {
   }  
   let out = String(htm || "");
   const isTh = CL_PVS.test(out);
-  if (isTh) { out = out.replace(CL_PVS, "$1") };
+  out = out.replace(CL_PVS, "$1");
   const chs = [
     [fxT, "f", "fxT"],        [CL_TSC, "\n\n", "CL_TSC"],    [CL_HDN, "", "CL_HDN"],     [CL_HDS, "", "CL_HDS"],
     [CL_CMT, "", "CL_CMT"],   [cHS, "f", "cHS"],             [CL_UDZ, "", "CL_UDZ"],     [CL_UDS, " ", "CL_UDS"],
