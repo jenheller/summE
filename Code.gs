@@ -41,8 +41,8 @@ var AZ_DCL = /Payment declined:/;
 var AZ_DLV = /Delivered:/;
 var AZ_ODR = /Ordered:/;
 var AZ_SPD = /Shipped:/;
-var CL_AD2 = /^[\w+\. ],? [A-Z]{2},? [\d\-]{5,10}$/;
 var CL_AD = /\b(?:S(?:[Tt][Ee]?|tree|ui)t?e?|A[Vv][Ee]?(?:nue)?|R(?:oa)?[Dd]|D[Rr](?:ive)?|B(?:ou)?[Ll]?e?[Vv](?:ar)?[Dd]|H(?:igh)?[Ww]a?[Yy]|Way|La?[Nn]e?|C(?:our)?[Tt]|Pi?[Kk]e?|C[Ii][Rr](?:cle)?|(?:T|P[Ll]a?)(?:ERR?|err?|[Cc][Ee]?)?|(?:P\.? *[Oo]\.? *)?[Bb](?:OX|ox) *\d+|A[Pp](?:ar)?[Tt](?:ment)?|Fl(?:oor)?|Unit)\.?\b/;
+var CL_AD2 = /^[\w+\. ],? [A-Z]{2},? [\d\-]{5,10}$/;
 var CL_AFT = /-->|<!?--|→|^\s*>\s*$|\[[^\[\]]+?\]|\b96\b|=\s?\d\s?\?|ADVERTISEMENT|SPONSOR(?:ED|)|\|\n|\s*\*{2,}\s*|image\svia.*?$|##[\d\w]+##|[A-Z_]{5,}:\s*(True|False|None|Null|[0-9]+)/gm;
 var CL_CPS = /[\t ]+/g;
 var CL_DSH = /^[-=]+$/gm;
@@ -74,10 +74,14 @@ var F_PRD = /⭕/g;
 var F_TGL = /<([^<>\n\r]*?)[\n\r]+>/g;
 var F_TGY = /(<\w+) *[\n\r]+ *(style.*?>)/g;
 var M_JSN = /^```(?:json)?\s*/i;
+var M_HTM = /(<(?:!doctype|head|style|html|body)[^<>]*?>[\S\s]+<\/(?:html|body)[^<>]*?>)/i;
 var M_LBS = /[\n\r]+/g;
 var M_LI = /(<li[^>]*?>([\S\s]+?)<\/li>)/g;
 var M_NOP = /your\semail\ssoftware\scan't\sdisplay\sHTML\semails|this\sis\s(?:a|the)\s.*?\stemplate/i;
 var M_NAT = /logo|badge|custom|icon|_|\.[a-z]{3,4}/i;
+var M_OTG = /^\s*(\s*<\/?[^<>\n\r]+?>\s*)+\s*$/;
+var M_PAF = /<\/(?:html|body)>([\S\s]+?)$/i;
+var M_PBF = /^([\S\s]+?)<(?:doctype|html|head|style|body)/i;
 var M_PDA = /(?:\b(S[Tt]?[Ee]?|A[VvPp][EeTt]?|R[Dd]|B(?:lvd|LVD)|H[Ww][Yy]|L[NnTt][Dd]?|C[TtIi][Rr]?|T[EeCc][RrEe]|P[LlKk]?|O|F[Ll]|I[Nn][Cc]|C[Oo]|N|E|W))\.(\s*)/gm;
 var M_PDE = /(\w+@\w+)\.([a-z]{2,4})/gm;
 var M_PDN = /((?:^|[>\s])\d{1,2})\.( +)/gm;
@@ -172,47 +176,49 @@ var M_IGA = new RegExp(`<img${P_NTG.source}alt${P_SEQ.source}"([\\w\\p{P} ]+?)"\
 var M_LBL = new RegExp(`<ul${P_TSX.source}(${P_ACR.source})<\\/ul>`, `gi`);
 var M_LNU = new RegExp(`<ol${P_TSX.source}(${P_ACR.source})<\\/ol>`, `gi`);
 var M_OPC = new RegExp(`^${P_PCT.source}+$`);
-var M_OTG = new RegExp(`^(?:<\\/?${P_NTG.source}>)+$`);
 
 // FONTS //
 
-var blkbry = `<font color="#200055">`, rsbry = `<font color="#3f00ab">`, stwbry = `<font color="#ff0060">`, cFnt = `</font>`;
+var bkbry = `<font color="#200055">`, rsbry = `<font color="#3f00ab">`, stbry = `<font color="#ff0060">`, cFt = `</font>`;
 
 // MESSAGES //
 
-var errOpAi = `${rsbry}OpenAI encountered an error. Please try again later.${cFnt}`;
-var fBt = `🗑️ ${stwbry}This message is full of junk and can't be summarized without timing out. Sorry about that.${cFnt}`;
-var fHscm = `🛑 FILTER: 🚨 SCAM! 🚨 (SNEAKY HIDDEN TEXT) 🚨 🛑`;
-var fNC = `${rsbry}It looks like this message has no content. I'll just take a little nap until the next one. 😴${cFnt}`;
-var fScm = `${stwbry}🚨 <b>STOP!! 🚨<br /><em>This email is likely a scam!</em><br /></b>(Contains hidden "dummy" text)<br />🔻 <b>DON'T</b> click any links.<br /><b>🔻 DON'T</b> open any attachments.<br />🔻 <b>REPORT</b> the email to your provider.<br />🔻 <b>DELETE </b> the email immediately.${cFnt}`;
-var fSz = `${stwbry}This email is too large to process without timing out. Try another one.${cFnt}`;
-var fWc = `${rsbry}By the time you finish reading this sentence, you could have already read that email, so just read it.${cFnt}`;
+var eOA = `${rsbry}OpenAI encountered an error. Please try again later.${cFt}`;
+var fBt = `🗑️ ${stbry}This message is full of junk and can't be summarized without timing out. Sorry about that.${cFt}`;
+var fNC = `${rsbry}It looks like this message has no content. I'll just take a little nap until the next one. 😴${cFt}`;
 var fNCT = `${rsbry}The top message in this thread is too short to summarize. Try another one.`;
+var fSm = `${stbry}🚨 <b>STOP!! 🚨<br /><em>This email is likely a scam!</em><br /></b>(Contains hidden "dummy" text)<br />🔻 <b>DON'T</b> click any links.<br /><b>🔻 DON'T</b> open any attachments.<br />🔻 <b>REPORT</b> the email to your provider.<br />🔻 <b>DELETE </b> the email immediately.${cFt}`;
+var fSz = `${stbry}This email is too large to process without timing out. Try another one.${cFt}`;
+var fWc = `${rsbry}By the time you finish reading this sentence, you could have already read that email, so just read it.${cFt}`;
 var lBl = `\n   - `;
-var lNoCn = `🛑 FILTER: NO CONTENT`;
-var lNoP = `🛑 FILTER: NO PLAIN TEXT - USING HTML 🛑`;
-var lScm = `🛑 FILTER: 🚨 SCAM! 🚨 (DISSIMILAR) 🚨 🛑`;
+var lHSm = `🛑 FILTER: 🚨 SCAM! 🚨 (SNEAKY HIDDEN TEXT) 🚨 🛑`;
+var lNP = `🛑 FILTER: NO PLAIN TEXT - USING HTML 🛑`;
+var lSm = `🛑 FILTER: 🚨 SCAM! 🚨 (DISSIMILAR) 🚨 🛑`;
 var lWc = `🛑 FILTER: LOW WORD COUNT - SKIPPING SUMMARY`;
 var rW = `WORD COUNT <= 150`;
-var rW34 = `WORD COUNT < 1/3 or 1/4`;
 var rNC = `WORD COUNT < 5`;
 
 // FUNCTIONS //
 
 // HELPER FUNCTIONS //
 
-function escRx(txt) { return txt.replace(F_ERX, "\\$1"); };
+function eRx(txt) { return txt.replace(F_ERX, "\\$1"); };
 function lIx(ptn) { return ptn.lastIndex = 0; };
-function lCs(char) { return char.toLowerCase(); };
-function uCs(char) { return char.toUpperCase(); };
+function lCs(chr) { return chr.toLowerCase(); };
+function uCs(chr) { return chr.toUpperCase(); };
 function rd2(num) { return Number(num.toFixed(2)); };
-function toPct(num) { return rd2((num * 100)); };
-function clM(src) { return src.map(m => escRx(m).trim()).join('|'); };
-function cWds(str) { const text = str.trim(); return text.split(S_WS).filter(Boolean).length; };
-function clps(text) { return String(text || "").replace(CL_CPS, " ").replace(CL_CLB, "\n").trim(); };
-function nNl(v) { if (v === "undefined" || v === "" || v === null || !v) { return true; } else { return false; }; };
+function pct(num) { return rd2((num * 100)); };
+function clM(src) { return src.map(m => eRx(m).trim()).join('|'); };
+function clp(txt) { return String(txt || "").replace(CL_CPS, " ").replace(CL_CLB, "\n").trim(); };
+function nNl(vbl) { return (vbl === "undefined" || vbl === "" || vbl === null || !vbl) ? true : false; };
 
-function cUqWds(txt) {
+function cWd(str) {
+  if (nNl(str)) { return 0; };
+  const txt = String(str).trim();
+  return txt.split(S_WS).filter(Boolean).length;
+}
+
+function cUW(txt) {
   let cmn = 0; txt = lCs(txt);
   const uq = new Set(), wds = txt.match(S_UWD);
   if (!wds) { return 0; };
@@ -222,30 +228,35 @@ function cUqWds(txt) {
   return cmn + uq.size;
 }
 
-function ckLg(lb, dta, size = 4000) {
+function ckL(lb, dta, sz = 4000) {
   let c = 0;
   if (nNl(dta)) { return; };
-  const text = (typeof dta === 'object') ? JSON.stringify(dta, null, 2) : String(dta);
-  const tl = Math.ceil(text.length / size);
-  for (let i = 0; i < text.length; i += size) {
-    c++; console.log(`${lb} CHUNK ${c} of ${tl}:\n${text.substring(i, i + size)}`);
+  const txt = (typeof dta === 'object') ? JSON.stringify(dta, null, 2) : String(dta);
+  const tl = Math.ceil(txt.length / sz);
+  for (let i = 0; i < txt.length; i += sz) {
+    c++;
+    console.log(`${lb} CHUNK ${c} of ${tl}:\n${txt.substring(i, i + sz)}`);
   }
 }
 
-function rgxRdc(out, chks, clL) {
+function rRx(out, chs, clL) {
   if (clL === "HTML" || clL === "Plain Text") {
-    chks.forEach(([p, r, l]) => {
-      out = (r === "f") ? p(out) : out.replace(p, r);
-      if (dCl) { ckLg(`🐞🐞 AFTER ${clL} ${l} 🐞🐞`, clps(out)); };
+    chs.forEach(([p, r, l]) => {
+      out = (r === "fm") ? p(out) : out.replace(p, r);
+      if (dbg) { console.log(`🆗 COMPLETED: ${l} 🆗`) };
+      if (dCl) { ckL(`🐞🐞 AFTER ${clL} ${l} 🐞🐞`, clp(out)); };
     });
   } else {
-    chks.forEach(([p, r]) => { out = (r === "f") ? p(out) : out.replace(p, r); });
+    chs.forEach(([p, r]) => { out = (r === "fm") ? p(out) : out.replace(p, r); });
   }
-  if (dbg) { console.log(`🆗 COMPLETED: ${clL} rgxRdc 🆗`) };
+  if (dbg) { console.log(`🆗 COMPLETED: ${clL} rRx 🆗`) };
   return out;
 }
 
-function cToC(n) { if (!Number.isFinite(n)) { return ""; }; try { return String.fromCodePoint(n); } catch (e) { return ""; }; };
+function cTC(num) {
+  if (!Number.isFinite(num)) { return ""; };
+  try { return String.fromCodePoint(num); } catch (e) { return ""; };
+}
 
 function dMg(src) {
   const ENT = {
@@ -255,57 +266,75 @@ function dMg(src) {
   },
   RGX1 = [ [D_QPB, ""], [D_QPC, "%$1"] ],
   RGX2 = [
-    [D_ANY, (_, hex) => cToC(parseInt(hex, 16))],    [D_NU, (_, dec) => cToC(parseInt(dec, 10))],
-    [D_LTR, (m, name) => (name in ENT ? ENT[name] : m)], [D_AMP, "&"], [D_LB, "\n"], [D_MD, "—"]
+    [D_ANY, (_, hex) => cTC(parseInt(hex, 16))],
+    [D_NU, (_, dec) => cTC(parseInt(dec, 10))],
+    [D_LTR, (m, name) => (name in ENT ? ENT[name] : m)],
+    [D_AMP, "&"], [D_LB, "\n"], [D_MD, "—"]
   ]
   let out = String(src || "");
   const clL = "Decode Message";
   if (D_QPC.test(out)) {
-    out = rgxRdc(out, RGX1, clL);
+    out = rRx(out, RGX1, clL);
     try { out = decodeURIComponent(out); } catch (e) { out; };
   }
-  out = rgxRdc(out, RGX2, clL);
+  out = rRx(out, RGX2, clL);
   if (dbg) { console.log(`🆗 COMPLETED: dMg 🆗`); };
   return out;
 }
 
-function fxTgs(src) {
-  let match;
-  const wdC = cWds(src);
+function cSr(sdr) {
+  sdr = String(sdr || "unknown").trim();
+  const qNm = sdr.match(M_SEQ), eOm = sdr.match(M_SEO),
+  eOly = eOm?.[1] || eOm?.[2];
+  let nm = sdr.match(M_SEN);
+  if (nm?.[1]) {
+    nm = nm[1].replace(/"/g, '') || "";
+    nm = CL_SDR.test(sdr) ? nm.replace(CL_SDR, "") : nm;
+  }
+  const chs = [
+    { ch: nm, sdr: nm }, { ch: eOly, sdr: eOly }, { ch: qNm?.[1], sdr: qNm }
+  ], mch = chs.find(c => c.ch);
+  sdr = mch?.ch ? mch.sdr : sdr;
+  if (dbg) { console.log(`🆗 COMPLETED: sdr 🆗`); };
+  return sdr;
+}
+
+function fxT(src) {
+  let mch;
+  const wdC = cWd(src);
   for (let i = 0; i < wdC; i++) {
-    while ((match = M_TBK.exec(src)) !== null) {
-      src = src.replace((new RegExp(`${escRx(match[0])}`)), (match[0].replace(M_LBS, " ")));
+    while ((mch = M_TBK.exec(src)) !== null) {
+      src = src.replace((new RegExp(`${eRx(mch[0])}`)), (mch[0].replace(M_LBS, " ")));
     }
   }
   src = src.replace(CL_TGS, "$1>");
   return src;
 }
 
-function clHdSty(html) {
+function cHS(htm) {
   const tgs = [
-    { o: '<head', c: '</head>', l: 7 },
-    { o: '<style', c: '</style>', l: 8 }
+    { o: '<head', c: '</head>', l: 7 }, { o: '<style', c: '</style>', l: 8 }
   ];
   tgs.forEach(tg => {
-    const lcH = lCs(html);
+    const lcH = lCs(htm);
     let res = '', i = 0;
-    while (i < html.length) {
+    while (i < htm.length) {
       const st = lcH.indexOf(tg.o, i), nd = lcH.indexOf(tg.c, st);
-      if (st === -1) { res += html.slice(i); break; };
-      res += html.slice(i, st);
-      if (nd === -1) { res += html.slice(st); break; };
+      if (st === -1) { res += htm.slice(i); break; };
+      res += htm.slice(i, st);
+      if (nd === -1) { res += htm.slice(st); break; };
       i = nd + tg.l;
     }
-    html = res;
+    htm = res;
   });
-  return html;
+  return htm;
 }
 
-function clIgA(src) {
+function cIA(src) {
   let txt = String(src || ""), ig;
   while ((ig = M_IGA.exec(txt)) !== null) {
     const alt = ig[1] || "", notAlt = M_NAT.test(alt),
-    sp = / /.test(alt), p = new RegExp(`${escRx(ig[0])}`);
+    sp = / /.test(alt), p = new RegExp(`${eRx(ig[0])}`);
     if (alt.length > 3 && !notAlt && sp) {
       txt = txt.replace(p, `${alt}`);
     } else {
@@ -315,13 +344,13 @@ function clIgA(src) {
   return txt;
 }
 
-function cvtLst(txt) {
+function cvL(txt) {
   let nL, bL;
   while ((nL = M_LNU.exec(txt)) !== null) {
     for (let i = 0; i < nL[1].length;) {
       const nLi = M_LI.exec(nL[1]);
       if (nNl(nLi)) { continue; } else if (nLi) {
-        const nLiPtn = new RegExp(`${escRx(nLi[1])}`);
+        const nLiPtn = new RegExp(`${eRx(nLi[1])}`);
         i++; txt = txt.replace(nLiPtn, `${i}. ${nLi[2].replace(P_ALB, " ")}`);
       }
     }
@@ -331,7 +360,7 @@ function cvtLst(txt) {
     for (let j = 0; j < bL[1].length;) {
       const bLi = M_LI.exec(bL[1]);
       if (nNl(bLi)) { break; } else if (bLi) {
-        const bLiPtn = new RegExp(`${escRx(bLi[1])}`);
+        const bLiPtn = new RegExp(`${eRx(bLi[1])}`);
         j++; txt = txt.replace(bLiPtn, `• ${bLi[2].replace(P_ALB, " ")}`);
       }
     }
@@ -339,53 +368,79 @@ function cvtLst(txt) {
   return txt;
 }
 
-function fxPnc(out) {
+function fxP(out) {
   const ptns = [
-    [F_PNC, "$1$2"],     [F_NU, "$1 $2"],
-    [F_CMS, "$1, $2"], [F_CML, "$1, $2"]
+    [F_PNC, "$1$2"],   [F_NU, "$1 $2"], [F_CMS, "$1, $2"], [F_CML, "$1, $2"]
   ];
-  const clL = "Fix Punctuation"; out = rgxRdc(out, ptns, clL);
+  const clL = "Fix Punctuation"; out = rRx(out, ptns, clL);
   return out;
 }
 
-function clPLnk(rawP, wdC) {
+function cPL(rwP, wdC) {
   let pLnk;
   for (let i = 0; i < wdC; i++) {
-    while ((pLnk = CL_LKI.exec(rawP)) !== null) {
+    while ((pLnk = CL_LKI.exec(rwP)) !== null) {
       if (!M_NAT.test(pLnk[1])) {
-        const pLp = new RegExp(`${escRx(pLnk[0]) || ""}`);
-        rawP = rawP.replace(pLp, `${pLnk[1]}`);
+        const pLp = new RegExp(`${eRx(pLnk[0]) || ""}`);
+        rwP = rwP.replace(pLp, `${pLnk[1]}`);
       }
     }
   }
-  return rawP;
+  return rwP;
 }
 
-function clHCn(html, clL) {
-  let out = String(html || "");
+function exH(raw) {
+  if (nNl(raw)) { return ""; };
+  raw = String(raw || "");
+  let htm = M_HTM.exec(raw) || "";
+  htm = htm ? htm[1] : "";
+  return htm;
+}
+
+function exP(raw) {
+  let scP = false, out = raw;
+  if (nNl(raw)) { return ""; };
+  raw = String(raw || "");
+  let pA = M_PAF.exec(raw) || "";
+  const pAt = M_OTG.test(pA[1]), pAW = cWd(pA[1]);
+  pA = pAt ? "" : pA[1].replace(P_ATG, "").trim();
+  if (nNl(pA[1]) || pAt || pAW === 0) {
+    scP = false; out = "";
+  } else { scP = true; out = pA };
+  return { scP, raP: out };
+}
+
+function cHC(htm, clL) {
+  if (nNl(htm)) {
+    if (dbg) { console.log(`🛑 FILTER: NO HTML - SKIPPING CLHCN`); };
+    return { out: htm, cMs: false, cWs: false, isTh: false };
+  }  
+  let out = String(htm || "");
   const isTh = CL_PVS.test(out);
   if (isTh) { out = out.replace(CL_PVS, "$1") };
-  const chks = [
-    [fxTgs, "f", "fxTgs"],          [cvtLst, "f", "cvtLst"],             [clIgA, "f", "clIgA"],
-    [P_EJ, "", "P_EJ"],             [CL_TSC, "\n\n", "CL_TSC"],    [CL_HDN, "", "CL_HDN"],
-    [CL_HDS, "", "CL_HDS"],   [clHdSty, "f", "clHdSty"],           [CL_UDZ, "", "CL_UDZ"],
-    [CL_UDS, " ", "CL_UDS"],    [CL_UDD, "-", "CL_UDD"],       [CL_UDL, "\n", "CL_UDL"],
-    [F_SBP, " ($2) ", "F_SBP"],     [F_TGY, "$1 $2", "F_TGY"],     [clIgA, "f", "clIgA"],
-    [CL_CMT, "", "CL_CMT"],         [CL_TDE, "$<ej1> ", "CL_TDE"], [CL_TDT, "$1$2", "CL_TDT"],
-    [CL_TFR, "", "CL_TFR"],     [CL_TFG, "\n", "CL_TFG"],      [F_TSP, "$1$2", "F_TSP"],
-    [P_ATG, "", "P_ATG"],     [F_TGL, "<$1>", "F_TGL"],      [CL_AFT, "", "CL_AFT"],
-    [CL_LKS, "$1", "CL_LKS"], [CL_DSH, "", "CL_DSH"],              [CL_XBT, "$1", "CL_XBT"],
-    [fxPnc, "f", "fxPnc"]
+  const chs = [
+    [fxT, "f", "fxT"],        [CL_TSC, "\n\n", "CL_TSC"],    [CL_HDN, "", "CL_HDN"],     [CL_HDS, "", "CL_HDS"],
+    [CL_CMT, "", "CL_CMT"],   [cHS, "f", "cHS"],             [CL_UDZ, "", "CL_UDZ"],     [CL_UDS, " ", "CL_UDS"],
+    [CL_UDD, "-", "CL_UDD"],  [CL_UDL, "\n", "CL_UDL"],      [F_SBP, " ($2) ", "F_SBP"], [F_TGY, "$1 $2", "F_TGY"],
+    [cIA, "f", "cIA"],        [CL_TDE, "$<ej1> ", "CL_TDE"], [CL_TDT, "\n", "CL_TDT"],   [CL_TFR, "", "CL_TFR"],
+    [CL_TFG, "\n", "CL_TFG"], [F_TGL, "<$1>", "F_TGL"],      [F_TSP, "$1$2", "F_TSP"],   [P_ATG, "", "P_ATG"],
+    [CL_AFT, "", "CL_AFT"],   [cvL, "f", "cvL"],             [CL_LKS, "$1", "CL_LKS"],   [CL_DSH, "", "CL_DSH"],
+    [CL_XBT, "$1", "CL_XBT"], [fxP, "f", "fxP"]
   ];
-  out = rgxRdc(out, chks, clL); out = clps(out);
-  if (dbg) { console.log(`🆗 COMPLETED: clHCn 🆗`); };
+  out = rRx(out, chs, clL); out = clp(out);
+  if (dbg) { console.log(`🆗 COMPLETED: cHC 🆗`); };
   return { out: out, isTh: isTh };
 }
 
-function clPCn(plain, clL) {
-  let out = String(plain || ""); const isTp = CL_PVS.test(out);
+function cPC(ptx, clL) {
+  if (nNl(ptx)) {
+    if (dbg) { console.log(`🛑 FILTER: NO PLAIN TEXT - SKIPPING CLPCN`); };
+    return { out: ptx, isTp: false };
+  }
+  let out = String(ptx || "");
+  const isTp = CL_PVS.test(out);
   if (isTp) { out = out.replace(CL_PVS, "$1") };
-  const chks = [
+  const chs = [
     [P_ATG, "", "P_ATG"],     [CL_UDZ, "", "CL_UDZ"],   [CL_UDS, " ", "CL_UDS"],
     [CL_UDD, "-", "CL_UDD"],  [CL_UDL, "\n", "CL_UDL"], [CL_CMT, "", "CL_CMT"],
     [CL_LKP, "", "CL_LKP"],   [F_PNC, "$1$2", "F_PNC"], [CL_MD, "$1", "CL_MD"],
@@ -393,9 +448,11 @@ function clPCn(plain, clL) {
     [CL_DSH, "", "CL_DSH"],   [CL_MIT, "$1", "CL_MIT"], [CL_MBD, "$1", "CL_MBD"],
     [CL_MBT, "$1", "CL_MBT"], [CL_MSK, "$1", "CL_MSK"], [P_MDH, "", "P_MDH"]
   ];
-  out = rgxRdc(out, chks, clL); const pWC = cWds(out); out = clPLnk(out, pWC); out = clps(out);
-  if (dbg) { console.log(`🆗 COMPLETED: clPCn 🆗`); };
-  return { out: out, isTp: isTp };
+  out = rRx(out, chs, clL);
+  const pWC = cWd(out); out = cPL(out, pWC);
+  out = clp(out);
+  if (dbg) { console.log(`🆗 COMPLETED: cPC 🆗`); };
+  return { cnP: out, isTp: isTp };
 }
 
 function sHF(txt) {
@@ -412,21 +469,21 @@ function sHF(txt) {
 
 function jHF(cks) { let jd = ""; for (let i = 0; i < cks.length; i++) { jd += cks[i][0] + cks[i][1]; }; return jd; };
 
-function clHrFr(src, stl) {
-  let text = src.trim();
-  const lns = sHF(text).filter(ln => !M_OTG.test(ln[0])).filter(ln => !M_OPC.test(ln[0])),
-  noLs = lns.length, hEd = Math.min((noLs * 0.3), noLs), fSt = Math.max(hEd,noLs-(noLs * 0.6)),
-  bdy = jHF(lns.slice(hEd, fSt)).replace(F_PRD, "."), hFr = jHF(lns.slice(fSt));
+function cHF(src, stl) {
+  let txt = src.trim();
+  const lns = sHF(txt).filter(ln => !M_OTG.test(ln[0])).filter(ln => !M_OPC.test(ln[0])),
+  noLs = lns.length, hEd = Math.min((noLs * 0.3), noLs),
+  fSt = Math.max(hEd,noLs-(noLs * 0.6)),
+  bdy = jHF(lns.slice(hEd, fSt)).replace(F_PRD, "."),
+  hFr = jHF(lns.slice(fSt));
   let hdr = lns.slice(0, hEd), ftr = lns.slice(fSt);
   hdr = hdr.map(ln => [ln[0].replace(P_ATG, "").replace(F_PRD, "."), ln[1]]);
   ftr = ftr.map(ln => [ln[0].replace(P_ATG, "").replace(F_PRD, "."), ln[1]]);
-  const wdC = cWds(jHF(hdr) + `\n` + bdy +`\n` + jHF(ftr));
+  const wdC = cWd(jHF(hdr) + `\n` + bdy +`\n` + jHF(ftr));
   if (dev) { console.log(`📐 PRECLEAN WORD COUNT: ${wdC}\n\n📐 LINES: ${noLs}`); };
-  if (wdC < 30) { return { text, hFr: "" }; };
+  if (wdC < 30) { return { txt, hFr: "" }; };
   if (hdr.some(ln => CL_HR.test(ln[0]))) {
-    if (dev) {
-      console.log(`🗣️ HEADER MATCH(ES) 🗣️:\n${hdr.filter(ln => CL_HR.test(ln[0]))}`);
-    }
+    if (dev) { console.log(`🗣️ HEADER MATCH(ES) 🗣️:\n${hdr.filter(ln => CL_HR.test(ln[0]))}`); };
     hdr = hdr.filter(ln => !CL_HR.test(ln[0]));
   }
   hdr = jHF(hdr); let lLns, fLns;
@@ -487,43 +544,26 @@ function clHrFr(src, stl) {
       }
     });
   ftr = jHF(ftr);
-  const prndWc = cWds(hdr + `\n` + bdy + `\n` + ftr);
+  const prndWc = cWd(hdr + `\n` + bdy + `\n` + ftr);
   if (dev) { console.log(`📐 PRUNED WORD COUNT: ${prndWc}`); };
   if (prndWc <= (wdC / 4)) {
     if (dev) { console.log(`🛑 FILTER: OVER-PRUNED (USING SAFE FOOTER) 🛑`); };
     ftr = sF;
   }
   const clL = "Clean Header/Footer";
-  text = clps((hdr + `\n` + bdy + `\n` + ftr), clL);
-  if (dbg) { console.log(`🆗 COMPLETED: ${clL} clHrFr 🆗`); };
-  return text;
+  txt = clp((hdr + `\n` + bdy + `\n` + ftr), clL);
+  if (dbg) { console.log(`🆗 COMPLETED: ${clL} cHF 🆗`); };
+  return txt;
 }
 
-function clSdr(sdr) {
-  sdr = String(sdr || "unknown").trim();
-  const qtdNm = sdr.match(M_SEQ), emlOnlyM = sdr.match(M_SEO),
-  emlOnly = emlOnlyM?.[1] || emlOnlyM?.[2];
-  let name = sdr.match(M_SEN);
-  if (name?.[1]) {
-    name = name[1].replace(/"/g, '') || "";
-    name = CL_SDR.test(sdr) ? name.replace(CL_SDR, "") : name;
-  }
-  const chks = [
-    { chk: name, sdr: name }, { chk: emlOnly, sdr: emlOnly }, { chk: qtdNm?.[1], sdr: qtdNm }
-  ], mch = chks.find(c => c.chk);
-  sdr = mch?.chk ? mch.sdr : sdr;
-  if (dbg) { console.log(`🆗 COMPLETED: sdr 🆗`); };
-  return sdr;
-}
-
-function clSmy(src) {
+function cSm(src) {
   let out = String(src || ""), isH = false, isP = false;
   const RGX = [
     [CL_MBT, "<strong><em>$1</em><strong>"], [CL_MSK, "<s>$1</s>"],
     [CL_MIT, "<em>$1</em>"],                 [CL_MBD, "<strong>$1<strong>"], 
   ];
-  out = rgxRdc(src, RGX, isH, isP);
-  if (dbg) { console.log(`🆗 COMPLETED: clSmy 🆗`); };
+  out = rRx(src, RGX, isH, isP);
+  if (dbg) { console.log(`🆗 COMPLETED: cSm 🆗`); };
   return out;
 }
 
@@ -532,45 +572,44 @@ function clSmy(src) {
 function wcF(wdC) { return wdC <= 150; };
 
 function cnF(clH, clP, mpH, isT) {
-  let h = true, p = true, f = null, v, a, r;
-  const hWc = cWds(clH), pWc = cWds(clP), h4 = hWc < (pWc / 4), p3 = pWc < (hWc / 3),
-  pTp = M_NOP.exec(clP), nH = (nNl(clH) || hWc <= 5), nP = (nNl(clP) || pWc <= 5),
+  let h = true, p = true, fm, v, r;
+  const hWc = cWd(clH), pWc = cWd(clP), pTp = M_NOP.exec(clP),
+  nH = (nNl(clH) || hWc <= 5), nP = (nNl(clP) || pWc <= 5),
   lbD = rd2(pWc / clP.split("\n").length), noN = ((lbD > 40) || !P_ALB.test(clP));
   if (dev) {
-    console.log(`📐 HTML WORD COUNT: ${hWc}\n📐 PLAIN WORD COUNT: ${pWc}\n\n🧱 PLAIN TEXT LINE BREAK DENSITY: ${lbD}`);
+    console.log(`📐 HTML WORD COUNT: ${hWc}\n📐 PLAIN WORD COUNT: ${pWc}`);
+    console.log(`🧱 PLAIN TEXT LINE BREAK DENSITY: ${lbD}`);
   }
   if (nH && nP) {
-    f = isT ? fNCT : fNC;
+    fm = isT ? fNCT : fNC;
     r = isT ? `TOP MESSAGE <= 5 WORDS` : rNC;
     if (dev) { `🛑 FILTER: NO CONTENT ${r}` };
-    return { h: false, p: false, f }
+    return { h: false, p: false, fm }
   }
-  if (h4 || nH) { h = false; v = "HTML"; };
-  if (p3 || nP || mpH || pTp || noN) { p = false; v = "PLAIN TEXT"; };
-  const rr = [
-    { t: (nH || nP), r: rNC },
-    { t: (h4 || p3), r: rW34 },
-    { t: mpH, r: "MISPLACED HTML" },
-    { t: pTp, r: `PLACEHOLDER/TEMPLATE (${pTp})` },
-    { t: noN, r: `LINE BREAK DENSITY (${lbD})` }
+  if (nH) { h = false; v = "HTML"; };
+  if (nP || mpH || pTp || noN) { p = false; v = "PLAIN TEXT"; };
+  const rls = [
+    { t: (nH || nP), r: rNC }, { t: mpH, r: "MISPLACED HTML" },
+    { t: pTp, r: `PLACEHOLDER/TEMPLATE (${pTp})` }, { t: noN, r: `LINE BREAK DENSITY (${lbD})` }
   ];
-  const rt = rr.find(t => t); if (rt) { r = rt.r };
-  if (h4 || p3) { a = h4 ? "PLAIN TEXT" : "HTML"; };
-  if (!h && !p) { f = isT ? fNCT : fNC; };
+  const rt = rls.find(rl => rl.t); if (rt) { r = rt.r };
+  if (!h && !p) { fm = isT ? fNCT : fNC; };
   if (dev && (!h || !p)) {
-    console.log(`🛑 FILTER: ` + (v ? v : 'NO CONTENT') + ` ${r} ` + (a ? a : '') + `- SKIPPING SCAM CHECK 🛑`);
+    console.log(`🛑 FILTER: ` + (v ? v : 'NO CONTENT') + ` ${r} - SKIPPING SCAM CHECK 🛑`);
   }
-  return { h, p, f };
+  return { h, p, fm };
 }
 
-function szF(src, trshld, lb) {
-  const text = String(src || "");
-  let unt = "B", mgS = text.length;
-  const bMg = (mgS > trshld) ? true : false,
-  kb = 1048576, mb = 1024, mgKb = mgS / kb, mgMb = mgS / mb;
-  if (mgS > kb) { mgS = mgS > mb ? mgMb : mgKb; unt = mgS > mb ? "MB" : "KB"; };
+function szF(src, thd, lb) {
+  const txt = String(src || "");
+  let mgS = txt.length, unt = "B"; const kb = 1024, mb = 1048576;
+  const bMg = (mgS > thd) ? true : false;
+  if (mgS > kb) {
+    if (mgS > mb) { mgS = mgS / mb; unt = "MB"; } else { mgS = mgS / kb; unt = "KB"; };
+  }
   mgS = rd2(mgS);
-  if (dev) { if (bMg) {
+  if (dev) {
+    if (bMg) {
       console.log(`🛑 FILTER: ${lb} SIZE (${mgS} ${unt}) 🛑`);
     } else { console.log(`📐 ${lb} SIZE: ${mgS} ${unt}`); };
   }
@@ -579,48 +618,37 @@ function szF(src, trshld, lb) {
 
 function btF(raw) {
   raw = raw.replace(CL_CMT, "");
-  const chks = [
-    { chk: raw.split(S_GHH).length > 20, rn: `👻 GHOST HEADER` },
-    { chk: ((raw.split("<").length - 1) / raw.length) > 0.25, rn: `🏷️ TAG DENSITY` },
-    { chk: raw.split("mso]").length > 10, rn: `🔭 OUTLOOK TAGS` }
+  const chs = [
+    { ch: raw.split(S_GHH).length > 20, rn: `👻 GHOST HEADER` },
+    { ch: ((raw.split("<").length - 1) / raw.length) > 0.25, rn: `🏷️ TAG DENSITY` },
+    { ch: raw.split("mso]").length > 10, rn: `🔭 OUTLOOK TAGS` }
   ];
-  const mch = chks.find(c => c.chk);
+  const mch = chs.find(c => c.ch);
   if (mch) { if (dev) { console.log(`🛑 FILTER: BLOATED - ${mch.rn} 🛑`); }; return true; };
   return false;
 }
 
-function dcScm(clH, clP) {
+function dSm(clH, clP) {
   let scm = false, hMCn = 0, pMCn = 0;
-  const gtTkn = (text) => new Set(lCs(String(text || "")).match(M_TKN) || []),
-  hTkn = gtTkn(clH), pTkn = gtTkn(clP);
+  const gtTkn = (txt) => new Set(lCs(String(txt || "")).match(M_TKN) || []);
+  const hTkn = gtTkn(clH), pTkn = gtTkn(clP);
   hTkn.forEach(token => { if (pTkn.has(token)) hMCn++; });
   pTkn.forEach(token => { if (hTkn.has(token)) pMCn++; });
   const hSim = hTkn.size ? (hMCn / hTkn.size) : 0,
   pSim = pTkn.size ? (pMCn / pTkn.size) : 0;
-  if (hSim < 0.4 && pSim < 0.4) { scm = true; };
+  const hIp = clH.includes(clP), pIh = clP.includes(clH);
+  if (hSim < 0.4 && pSim < 0.4 && !hIp && !pIh) { scm = true; };
   if (dev) {
-    console.log(`📐 HTML > PLAIN SIMILARITY: ${toPct(hSim)}%\n\n📐 PLAIN > HTML SIMILARITY: ${toPct(pSim)}%`);
+    console.log(`❓ HTML INCLUDES PLAIN TEXT? ${hIp} ❓\n❓ PLAIN TEXT INCLUDES HTML? ${pIh} ❓`);
+    console.log(`📐 HTML > PLAIN SIMILARITY: ${pct(hSim)}%\n📐 PLAIN > HTML SIMILARITY: ${pct(pSim)}%`);
   }
   return scm;
 }
 
-function ckTx(text, maxLength) {
-  const s = String(text || ""), cks = [];
-  let srt = 0, N = s.length;
-  while (srt < N) {
-    let end = Math.min(srt + maxLength, N);
-    const pce = s.slice(srt, end).trim();
-    if (end < N) { let ws = s.lastIndexOf(" ", end - 1);
-    if (ws <= srt) ws = end; end = ws; };
-    if (pce) cks.push(pce); srt = end + 1;
-  }
-  return cks;
-}
-
-function subjHt(subj) {
-  let stl = false; const stlmt = M_SLT.exec(subj);
-  if (stlmt) {
-    stl = true; if (dev) { console.log(`💵 SETTLEMENT MATCH: ${stlmt}`); };
+function sbH(sbj) {
+  let stl = false; const slm = M_SLT.exec(sbj);
+  if (slm) {
+    stl = true; if (dev) { console.log(`💵 SETTLEMENT MATCH: ${slm}`); };
   }
   const SBJ_A = [
     { ptn: A_APL, act: "applied" }, { ptn: A_AVL, act: "available" }, { ptn: A_CFM, act: "confirmed" }, { ptn: A_CMG, act: "on the way" },
@@ -639,16 +667,16 @@ function subjHt(subj) {
     { ptn: T_TNS, thg: "transaction" }
   ];
   let aX, tX, aM, sjH = null;
-  const aChk = SBJ_A.find(a => a.ptn.test(subj));
+  const aChk = SBJ_A.find(a => a.ptn.test(sbj));
   if (aChk) {
-    aM = aChk.ptn.exec(subj); aX = aChk.act;
+    aM = aChk.ptn.exec(sbj); aX = aChk.act;
     if (dev) {
       console.log(`📧 SUBJECT ACTION MATCH: 📧${lBl}MATCH: ${aM}${lBl}ACTION: ${aX}`);
     }
   }
-  const tChk = SBJ_T.find(t => t.ptn.test(subj));
+  const tChk = SBJ_T.find(t => t.ptn.test(sbj));
   if (tChk) {
-    const tM = tChk.ptn.exec(subj); tX = tChk.thg;
+    const tM = tChk.ptn.exec(sbj); tX = tChk.thg;
     if (stl) { tX = `settlement`; };
     if (dev) {
       console.log(`📧 SUBJECT THING MATCH: 📧${lBl}MATCH: ${tM}${lBl}THING: ${tX}`);
@@ -656,77 +684,80 @@ function subjHt(subj) {
   }
   if (aX && tX) {
     if (aX === "applied" || aX === "complete") {
-      const aPls = new RegExp(`please\\s${escRx(aM[0])}`, `i`);
-      const plsM = aPls.test(subj);
+      const aPls = new RegExp(`please\\s${eRx(aM[0])}`, `i`);
+      const plsM = aPls.test(sbj);
       if (dev) { console.log(`📧 PLEASE MATCH? ${plsM}`); };
       if (plsM) { sjH = null; };
     } else {
       sjH = `TOPIC: ${tX}\nSTATUS: ${aX}`;
     }
     if (dev) { console.log(`📧 SUBJECT HINT:\n${sjH}`) };
-    if (dbg) { console.log(`🆗 COMPLETED: subjHt 🆗`); };
+    if (dbg) { console.log(`🆗 COMPLETED: sbH 🆗`); };
   }
   return { sjH, stl };
 }
 
 // WORKFLOW FUNCTIONS //
 
-function getMg(e) {
+function gMg(e) {
   if (!e || !e.gmail || !e.gmail.accessToken) { throw new Error("⛔ MISSING GMAIL ACCESS TOKEN."); };
   GmailApp.setCurrentMessageAccessToken(e.gmail.accessToken);
-  const mgId = e.gmail.messageId; if (!mgId) { return null; };
-  const msg = GmailApp.getMessageById(mgId);
-  const date = msg.getDate() ? Utilities.formatDate(msg.getDate(), Session.getScriptTimeZone(), "M/d/yyyy h:mm a") : "";
-  const subj = String(msg.getSubject() || "").replace(CL_SJ, "").trim();
-  const sdr = clSdr(dMg(msg.getFrom() || "unknown"));
-  const data = { mgId, date, subj, sdr };
-  const { sjH, stl } = subjHt(subj);
+  const mId = e.gmail.messageId;
+  if (!mId) { return null; };
+  const msg = GmailApp.getMessageById(mId),
+  date = msg.getDate() ? Utilities.formatDate(msg.getDate(), Session.getScriptTimeZone(), "M/d/yyyy h:mm a") : "",
+  sbj = String(msg.getSubject() || "").replace(CL_SJ, "").trim(),
+  sdr = cSr(dMg(msg.getFrom() || "unknown"));
+  const dta = { mId, date, sbj, sdr };
+  const { sjH, stl } = sbH(sbj);
   if (sjH !== null) {
     if (dev) { console.log(`📧 SUBJECT HINT:\n${sjH}`); };
-    return { ...data, sjH: sjH };
+    return { ...dta, sjH: sjH };
   }
-   const rawCn = msg.getBody() || "";
-  let sz = szF(rawCn, 1024000, "RAW"), f;
-  if (sz || btF(msg.getRawContent().substring(10000, 20000))) {
-    f = sz ? fSz : fBt; return { ...data, f };
-  }
-  const rawH = dMg(rawCn), rawP = dMg(msg.getPlainBody()) || "";
-  if (M_SCH.test(rawH)) { if (dev) { console.log(fHscm); }; return { ...data, f: fScm }; };
-  const hWc = cWds(rawH), pWc = cWds(rawP);
-  if (hWc < 5 && pWc < 5) { return { ...date, f: fNC }; };
+  let fm, rwCn = msg.getBody() || "";
+  if (szF(rwCn, 1024000, "RAW")) { return { ...dta, fm: fZ }; };
+  if (btF(rwCn.substring(10000, 20000))) { return { ...dta, fm: fBt }; };
+  rwCn = dMg(rwCn);
+  const rwH = exH(rwCn);
+  if (M_SCH.test(rwH)) { if (dev) { console.log(lHSm); }; return { ...dta, fm: fSm }; };
+  const { scP, raP } = exP(rwCn);
+  if (dev) { console.log(`❓ SCAM PLAIN TEXT? ${scP} ❓`); };
+  const rwP = scP ? raP : dMg(msg.getPlainBody());
+  const hWc = cWd(rwH), pWc = cWd(rwP);
+  if (hWc < 5 && pWc < 5) { return { ...date, fm: fNC }; };
   let clH, clP, clL = "HTML";
-  ({ out: clH, cMs, cWs, isTh } = clHCn(rawH, clL));
+  ({ out: clH, cMs, cWs, isTh } = cHC(rwH, clL));
   clH = clH.replace(CL_DTY, "");
-  const mpH = CL_DTY.test(rawP) ? true : false;
-  clL = "Plain Text"; ({ out, isTp } = clPCn(rawP, clL));
-  clP = !mpH ? out : clH;
+  const mpH = CL_DTY.test(rwP) ? true : false;
+  clL = "Plain Text"; ({ cnP, isTp } = cPC(rwP, clL));
+  clP = !mpH ? cnP : clH;
   const isT = (isTh || isTp) ? true : false;
-  ({ h, p, f: f } = cnF(clH, clP, mpH, isT));
-  if (!h && !p) { return { ...data, f: f }; };
-  if (h && p && dcScm(clH, clP)) {
-    if (dev) { console.log(lScm); }; return { ...data, f: fScm };
+  ({ h, p, fm: fm } = cnF(clH, clP, mpH, isT));
+  if (!h && !p) { return { ...dta, fm: fm }; };
+  if (h && p && dSm(clH, clP)) {
+    if (dev) { console.log(lSm); }; return { ...dta, fm: fSm };
   }
   const useH = h && !p ? true : false;
-  if (useH && dev) { console.log(lNoP); };
-  let preMg = useH ? clH : clP;
-  preMg = preMg.replace(P_EJ, "");
-  wdC = cWds(preMg);
-  if (dev) { ckLg("📝 PRECLEAN CONTENT", preMg); };
-  if (wcF(wdC)) { if (dev) { console.log(`${lWc} (PRECLEAN) 🛑`); }; return { ...data, f: fWc }; };
-  let mgCn = clHrFr(preMg, stl); wdC = cUqWds(mgCn);
+  if (useH && dev) { console.log(lNP); };
+  let pMg = useH ? clH : clP;
+  pMg = pMg.replace(P_EJ, "");
+  wdC = cWd(pMg);
+  if (dev) { ckL("📝 PRECLEAN CONTENT", pMg); };
+  if (wcF(wdC)) { if (dev) { console.log(`${lWc} (PRECLEAN) 🛑`); }; return { ...dta, f: fWc }; };
+  let mgCn = cHF(pMg, stl); wdC = cUW(mgCn);
   if (dev) {
     console.log(`📐 ☙UNIQUE❧ WORD COUNT: ${wdC}`);
-    ckLg(`📝 POSTCLEAN CONTENT`, mgCn);
+    ckL(`📝 POSTCLEAN CONTENT`, mgCn);
   }
-  if (wcF(wdC)) { if (dev) { console.log(`${lWc} (FINAL) 🛑`); }; return { ...data, f: fWc }; };
+  if (wcF(wdC)) { if (dev) { console.log(`${lWc} (FINAL) 🛑`); }; return { ...dta, f: fWc }; };
   sz = szF(mgCn, 512000, "FINAL");
-  if (dbg) { console.log(`🆗 COMPLETED: getMg 🆗`); };
-  return { ...data, mgCn: mgCn, wdC: wdC, sjH: sjH };
+  if (dbg) { console.log(`🆗 COMPLETED: gMg 🆗`); };
+  return { ...dta, mgCn: mgCn, wdC: wdC, sjH: sjH };
 }
 
-function usrPmpt(mgCn, subj, sdr, aHnt, wcHnt) {
+function uPt(mgCn, sbj, sdr, aHnt, wcH) {
   return [`
-    SUBJECT: ${subj}
+    SUBJECT: ${sbj}
     SENDER: ${sdr}
     `+ (aHnt ? `APPOINTMENT HINT: While summarizing, keep in mind the content is regarding an appointment with this status: ${aHnt}.` : ``) +`
 
@@ -735,14 +766,16 @@ function usrPmpt(mgCn, subj, sdr, aHnt, wcHnt) {
 
     INSTRUCTIONS:
 
-    Your voice is the voice of the content. Adopt the STYLE, TONE, POINT-OF-VIEW, and TENSE of the content, and summarize it clearly and concisely in`  + (wcHnt ? `one straightforward, complete sentence of at least 5 words and *NO MORE THAN 20 WORDS MAXIMUM*.` : `2-4 complete sentences, each at least 3 words and *NO MORE THAN 15 WORDS MAXIMUM*. Your entire summary should be no more than 60 words. Your primary task is to provide a brief, high-level overview, NOT include all details.`) + `
+    Your voice is the voice of the content. Adopt the STYLE, TONE, POINT-OF-VIEW, and TENSE of the content, and summarize it clearly and concisely in`  + (wcH ? `one straightforward, complete sentence of at least 5 words and *NO MORE THAN 20 WORDS MAXIMUM*.` : `2-4 complete sentences, each at least 3 words and *NO MORE THAN 15 WORDS MAXIMUM*. Your entire summary should be no more than 60 words. Your primary task is to provide a brief, high-level overview, NOT include all details.`) + `
     
     **NEVER refer to the content as if you exist outside of it.**
     NEVER refer to the "post/content/article/message/story/newsletter/etc." You're NOT a separate entity creating, sending, offering, or describing the content; You ARE the content. You exist INSIDE the content. There's no world outside of the content.
 
-    **NEVER refer the recipient or sender by name!**
+    **NEVER refer the recipient or sender by name or email address!**
 
-    Make only ONE point with your summary—the most important point. Write clearly and naturally in the *ACTIVE VOICE*, as if you're conversing with someone. *NEVER* sacrifice naturalness or active voice to avoid exdeeding the maximum word count; omit details instead. *NEVER* leave out conjunctions, definite articles, or pronouns to shorten the summary. ALWAYS prioritize naturalness and clarity, NOT thoroughness.
+    Make only ONE point with your summary—the most important point. Write clearly and naturally in the *ACTIVE VOICE*, as if you're conversing with someone. *NEVER* sacrifice naturalness or active voice to avoid exdeeding the maximum word count; omit details instead.
+    
+    **IMPORTANT: NEVER leave out pronouns, conjunctions, or definite articles to shorten the summary! ALWAYS prioritize naturalness/clarity, NOT thoroughness/details.**
 
     DON'T use formal/academic language, jargon, or slang not used in the content. When in doubt, use exact wording.
 
@@ -762,12 +795,12 @@ function usrPmpt(mgCn, subj, sdr, aHnt, wcHnt) {
     ✅ RIGHT: Just say what the latest news/research is.
 
     ❌ WRONG: "We recommend focused, concise alt text."
-    ✅ RIGHT: Re-write to add context: ` + (wcHnt ? `"Writing alt text can be difficult, which is why we recommend keeping it focused and concise."` : `"Alt text can be difficult to write well. We recommend keeping it focused and concise."`)].join('\n');
+    ✅ RIGHT: Re-write to add context: ` + (wcH ? `"Writing alt text can be difficult, which is why we recommend keeping it focused and concise."` : `"Alt text can be difficult to write well. We recommend keeping it focused and concise."`)].join('\n');
 }
 
-function sbjPmpt(subj, sdr, sjH) {
+function sPt(sbj, sdr, sjH) {
   return [`
-    MESSAGE SUBJECT: ${subj}
+    MESSAGE SUBJECT: ${sbj}
     SENDER: ${sdr}
     ${sjH}
 
@@ -801,7 +834,7 @@ function sbjPmpt(subj, sdr, sjH) {
   `].join('\n');
 }
 
-function opnAiCl({ system = null, user, jsonSchema = null, model = "gpt-4.1-mini" }) {
+function oAC({ system = null, user, jsonSchema = null, model = "gpt-4.1-mini" }) {
   const MX_RTY = 3;
   if (!__OPNAI_KEY) {
     __OPNAI_KEY = PropertiesService.getScriptProperties().getProperty("OPENAI_API_KEY");
@@ -833,14 +866,14 @@ function opnAiCl({ system = null, user, jsonSchema = null, model = "gpt-4.1-mini
         payload: JSON.stringify(body),
         muteHttpExceptions: true
       });
-      var txt = res.getContentText(), data;
-      try { data = JSON.parse(txt); } catch (e) {
+      var txt = res.getContentText(), dta;
+      try { dta = JSON.parse(txt); } catch (e) {
         throw new Error(`⛔ OPENAI RESPONSE WAS NOT JSON (${res.getResponseCode()}): ${txt}`);
       }
       var out = "", jsn = null;
-      if (data && Array.isArray(data.output)) {
-        for (var i = 0; i < data.output.length; i++) {
-          var msg = data.output[i];
+      if (dta && Array.isArray(dta.output)) {
+        for (var i = 0; i < dta.output.length; i++) {
+          var msg = dta.output[i];
           if (!msg || !Array.isArray(msg.content)) { continue; };
           for (var j = 0; j < msg.content.length; j++) {
             var c = msg.content[j];
@@ -855,13 +888,13 @@ function opnAiCl({ system = null, user, jsonSchema = null, model = "gpt-4.1-mini
         var candidate = out.trim().replace(M_JSN, "").replace(CL_JSN, "").trim();
         try { jsn = JSON.parse(candidate); } catch (_e) {}
       }
-      if (dbg) { console.log(`🆗 COMPLETED: opnAiCl 🆗`); };
+      if (dbg) { console.log(`🆗 COMPLETED: oAC 🆗`); };
       if (jsonSchema) {
-        if (jsn == null) { throw new Error(errOpAi); };
-        return { ok: true, json: jsn, raw: data };
+        if (jsn == null) { throw new Error(eOA); };
+        return { ok: true, json: jsn, raw: dta };
       } else {
-        if (!out.trim()) { throw new Error(errOpAi); };
-        return { ok: true, text: out.trim(), raw: data };
+        if (!out.trim()) { throw new Error(eOA); };
+        return { ok: true, text: out.trim(), raw: dta };
       }
     } catch(e) {
       console.log(`⚠️ EXCEPTION ON ATTEMPT ${atp + 1}: ${e.message}`);
@@ -873,26 +906,26 @@ function opnAiCl({ system = null, user, jsonSchema = null, model = "gpt-4.1-mini
   Utilities.sleep(delay);
 }
 
-function sumz(mgCn, subj, sdr, wdC, sjH) {
+function sumz(mgCn, sbj, sdr, wdC, sjH) {
   let aHnt;
-  const apptA = APT_A.exec(subj), apptT = APT_T.exec(subj);
+  const apptA = APT_A.exec(sbj), apptT = APT_T.exec(sbj);
   if (apptA && apptT) {
     aHnt = `APPOINTMENT: ${apptT}\nSTATUS: ${apptA}`
     if (dev) { console.log(`📆 APPTOINTMENT HINT: ${aHnt}`); };
   }
-  const wcHnt = wdC <= 250;
-  if (wcHnt && dev) {
+  const wcH = wdC <= 250;
+  if (wcH && dev) {
     console.log(`🛑 FILTER: WORD COUNT (${wdC}) - ONE-SENTENCE SUMMARY 🛑`)
   }
-  const uPmt = usrPmpt(mgCn, subj, sdr, aHnt, wcHnt),
-  sPmt = sbjPmpt(subj, sdr, sjH); let res;
+  const uPmt = uPt(mgCn, sbj, sdr, aHnt, wcH),
+  sPmt = sPt(sbj, sdr, sjH); let res;
   if (sjH) {
-    res = opnAiCl({
+    res = oAC({
       system: "You are a message subject definer. Your role is to return one brief sentence that defines the subject of a message using an extracted topic and status.",
       user: sPmt
     });
   } else  {
-    res = opnAiCl({
+    res = oAC({
       system: "You are this content. You exist only inside the content, and you speak with the voice of the content. Your task is to summarize the text in your own voice. with a focus on your main point or goal. ***IMPORTANT: NEVER REFER YO THE CONTENT AS IF YOU EXIST OUTSIDE OF IT. YOU ARE THE CONTENT.",
       user: uPmt
     });
@@ -905,38 +938,40 @@ function sumz(mgCn, subj, sdr, wdC, sjH) {
 function onHomepage(e) {
   const card = CardService.newCardBuilder().setHeader(CardService.newCardHeader().setTitle("summE"))
     .addSection(CardService.newCardSection().addWidget(CardService.newTextParagraph()
-    .setText(`${rsbry}<b>Hi! I'm summE.</b><br />I summarize emails in one paragraph or less. Open any message to start.${cFnt}`)));
+    .setText(`${rsbry}<b>Hi! I'm summE.</b><br />I summarize emails in one paragraph or less. Open any message to start.${cFt}`)));
   return card.build();
 }
 
 function onGmailMessageOpen(e) {
   try {
-    var mDta = getMg(e); if (!mDta) { return onHomepage(e); };
-    if (mDta.f) { return bCrd(mDta.f, mDta.subj, mDta.sdr, mDta.date, mDta.mgId, null, true); };
-    let smy = clSmy(sumz(mDta.mgCn, mDta.subj, mDta.sdr, mDta.wdC, mDta.sjH));
-    smy = smy.replace(P_LB, " ");
+    var dta = gMg(e); if (!dta) { return onHomepage(e); };
+    if (dta.fm) {
+      return bCd(dta.fm, dta.sbj, dta.sdr, dta.date, dta.mId, null, true);
+    }
+    let out = cSm(sumz(dta.mgCn, dta.sbj, dta.sdr, dta.wdC, dta.sjH));
+    out = out.replace(P_LB, " ");
     if (dbg) { console.log(`🆗 COMPLETED: onGmailMessageOpen 🆗`); };
-    return bCrd(smy, mDta.subj, mDta.sdr, mDta.date, mDta.mgId, null, false);
-  } catch (err) { return bECrd(err); }
+    return bCd(out, dta.sbj, dta.sdr, dta.date, dta.mId, null, false);
+  } catch (err) { return bEC(err); }
 }
 
-function bCrd(smy, subj, sdr, date, mid, tid, mFm) {
-  const header = CardService.newCardHeader().setTitle(`${rsbry}summE - Gmail™ Summarizer${cFnt}`).setSubtitle('Developed by Teddy Did It Development 🐻');
-  const sectionMeta = CardService.newCardSection()
-    .addWidget(CardService.newKeyValue().setTopLabel(`${rsbry}Subject:${cFnt}`).setContent(subj).setMultiline(true))
-    .addWidget(CardService.newKeyValue().setTopLabel(`${rsbry}From:${cFnt}`).setContent(sdr).setMultiline(true))
-    .addWidget(CardService.newKeyValue().setTopLabel(`${rsbry}Date:${cFnt}`).setContent(date));
-  const sectionSummary = CardService.newCardSection().setHeader(`${rsbry}Email Summary`).addWidget(CardService.newTextParagraph().setText(`${blkbry}${smy}`));
-  if (!mFm) { sectionSummary.addWidget(CardService.newTextParagraph().setText(`${rsbry}&ndash; Generated by ChatGPT${cFnt} 🤖`)); }
-  const builder = CardService.newCardBuilder().setHeader(header).addSection(sectionMeta).addSection(sectionSummary);
-  if (dbg) { console.log(`🆗 COMPLETED: bCrd 🆗`); };
+function bCd(out, sbj, sdr, date, mid, tid, mFm) {
+  const cHdr = CardService.newCardHeader().setTitle(`${rsbry}summE - Gmail™ Summarizer${cFt}`).setSubtitle('Developed by Teddy Did It Development 🐻');
+  const cMta = CardService.newCardSection()
+    .addWidget(CardService.newKeyValue().setTopLabel(`${rsbry}Subject:${cFt}`).setContent(sbj).setMultiline(true))
+    .addWidget(CardService.newKeyValue().setTopLabel(`${rsbry}From:${cFt}`).setContent(sdr).setMultiline(true))
+    .addWidget(CardService.newKeyValue().setTopLabel(`${rsbry}Date:${cFt}`).setContent(date));
+  const cDta = CardService.newCardSection().setHeader(`${rsbry}Email Summary`).addWidget(CardService.newTextParagraph().setText(`${bkbry}${out}`));
+  if (!mFm) { cDta.addWidget(CardService.newTextParagraph().setText(`${rsbry}&ndash; Generated by ChatGPT${cFt} 🤖`)); }
+  const bdr = CardService.newCardBuilder().setHeader(cHdr).addSection(cMta).addSection(cDta);
+  if (dbg) { console.log(`🆗 COMPLETED: bCd 🆗`); };
   if (dbg || dev) { console.log(`🎉 SUCCESS! 🎉`); };
-  return builder.build();
+  return bdr.build();
 }
 
-function bECrd(err) {
-  const eMg = (err && err.message ? err.message : String(err));
-  const card = CardService.newCardBuilder().setHeader(CardService.newCardHeader().setTitle("summE")).addSection(CardService.newCardSection()
-    .addWidget(CardService.newTextParagraph().setText(`${stwbry}<em><b>Sorry!</b></em> That didn't work. 😕<br />${eMg}${cFnt}`)));
-  return card.build();
+function bEC(err) {
+  const eMg = (err && err.message) ? err.message : String(err),
+  crd = CardService.newCardBuilder().setHeader(CardService.newCardHeader().setTitle("summE")).addSection(CardService.newCardSection()
+    .addWidget(CardService.newTextParagraph().setText(`${stbry}<em><b>Sorry!</b></em> That didn't work. 😕<br />${eMg}${cFt}`)));
+  return crd.build();
 }
