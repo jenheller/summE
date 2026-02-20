@@ -159,7 +159,7 @@ var CL_MBD = new RegExp(`${P_MD.source}{2}${P_AC1.source}${P_MD.source}{2}`, `g`
 var CL_MBT = new RegExp(`${P_MD.source}{3}${P_AC1.source}${P_MD.source}{3}`, `g`);
 var CL_MIT = new RegExp(`${P_MD.source}${P_AC1.source}${P_MD.source}`, `g`);
 var CL_MSK = new RegExp(`~~${P_AC1.source}~~`, "g");
-var CL_PVS = new RegExp(`(${P_LS.source})(?:(?:(?:(?:On(?:\\s${P_ULL.source}{1,5},)?\\s${P_ULL.source}{1,10}\\s\\d{1,2},\\s\\d{4},?\s(?:at\\s)?\\d{1,2}:\\d{1,2}(?:\\:\\d{1,2})?\\s[AP]M(?:\\s[A-Z]{3})?,?\\s${P_EML.source}\\swrote${P_WS.source})|(?:(?:(?:Begin\\s|${P_WS.source}-{2,10}${P_WS.source})[Ff]orwarded|[Oo]riginal)\\s[Mm]essage))(?:${P_WS.source}-{2,6}${P_WS.source}|:))|(?:${P_BDO.source}|)From${P_WS.source}${P_EML.source})${P_LE.source}${P_ACN.source}$`);
+var CL_PVS = new RegExp(`(${P_LS.source})(?:(?:(?:(?:On(?:\\s${P_ULL.source}{1,5},)?\\s${P_ULL.source}{1,10}\\s\\d{1,2},\\s\\d{4},?\\s(?:at\\s)?\\d{1,2}:\\d{1,2}(?:\\:\\d{1,2})?\\s[AP]M(?:\\s[A-Z]{3})?,?\\s${P_EML.source}\\swrote${P_WS.source})|(?:(?:(?:Begin\\s|${P_WS.source}-{2,10}${P_WS.source})[Ff]orwarded|[Oo]riginal)\\s[Mm]essage))(?:${P_WS.source}-{2,6}${P_WS.source}|:))|(?:${P_BDO.source}|)From${P_WS.source}${P_EML.source})${P_LE.source}${P_ACN.source}$`);
 var CL_TFG = new RegExp(`<(figure|figcaption)${P_TSX.source}${P_ACN.source}${P_TCC.source}`, `gi`);
 var CL_TFR = new RegExp(`fr-original-style${P_SEQ.source}"[^">]*(?:"[^">]*"[^">]*)*"`, `gi`);
 var CL_TDE = new RegExp(`${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}(?<ej1>${P_WS.source}(?:${P_EJ.source}|${P_BL.source}))${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}`, `gui`);
@@ -242,12 +242,12 @@ function ckL(lb, dta, sz = 4000) {
 function rRx(out, chs, clL) {
   if (clL === "HTML" || clL === "Plain Text") {
     chs.forEach(([p, r, l]) => {
-      out = (r === "fm") ? p(out) : out.replace(p, r);
+      out = (r === "f") ? p(out) : out.replace(p, r);
       if (dbg) { console.log(`🆗 COMPLETED: ${l} 🆗`) };
       if (dCl) { ckL(`🐞🐞 AFTER ${clL} ${l} 🐞🐞`, clp(out)); };
     });
   } else {
-    chs.forEach(([p, r]) => { out = (r === "fm") ? p(out) : out.replace(p, r); });
+    chs.forEach(([p, r]) => { out = (r === "f") ? p(out) : out.replace(p, r); });
   }
   if (dbg) { console.log(`🆗 COMPLETED: ${clL} rRx 🆗`) };
   return out;
@@ -743,13 +743,13 @@ function gMg(e) {
   pMg = pMg.replace(P_EJ, "");
   wdC = cWd(pMg);
   if (dev) { ckL("📝 PRECLEAN CONTENT", pMg); };
-  if (wcF(wdC)) { if (dev) { console.log(`${lWc} (PRECLEAN) 🛑`); }; return { ...dta, f: fWc }; };
+  if (wcF(wdC)) { if (dev) { console.log(`${lWc} (PRECLEAN) 🛑`); }; return { ...dta, fm: fWc }; };
   let mgCn = cHF(pMg, stl); wdC = cUW(mgCn);
   if (dev) {
     console.log(`📐 ☙UNIQUE❧ WORD COUNT: ${wdC}`);
     ckL(`📝 POSTCLEAN CONTENT`, mgCn);
   }
-  if (wcF(wdC)) { if (dev) { console.log(`${lWc} (FINAL) 🛑`); }; return { ...dta, f: fWc }; };
+  if (wcF(wdC)) { if (dev) { console.log(`${lWc} (FINAL) 🛑`); }; return { ...dta, fm: fWc }; };
   sz = szF(mgCn, 512000, "FINAL");
   if (dbg) { console.log(`🆗 COMPLETED: gMg 🆗`); };
   return { ...dta, mgCn: mgCn, wdC: wdC, sjH: sjH };
