@@ -48,7 +48,7 @@ var CL_CPS = /[\t ]+/g;
 var CL_DSH = /^[-=]+$/gm;
 var CL_FR = /unsubscribe|(?:no\s*longer|)\s*(?:would|want|wish|need)\s*(?:like\s*|)(?:stop|change)\s*(?:show\syou|to|your\ssubcription)\s*(?:receive?(?:ing)?|(?:be\s*|)removed|remove\s*yourself)|advertise\s*(?:on|with)/i;
 var CL_FRB = /(?:(?:mem|subsci|read)b?er|pay)[\s\-](?:only|(?:wall|support)ed)|(?:pledg|donat)(?:ing|e|ion)\b|(?:keep|continue|read|view|see)\s(?:more|full\sstory|reading)|(?:you(?:\sare|[’']re)\scurrently)|(?:become?(?:ing)?\s*an?\s*(?:free\s*(?:or\s*(?:paid|paying))?|(?:[\w\p{P} ]+))?\s*(?:member|subscriber\b))|buy\sme\sa\scoffee|support\s(?:us|me|(?:our|my)\swork)|(?:for\saccess|if\syou).*?\supgrade\b|add\s*(?:your)?\spostal\saddress\shere|web\s*version/ui;
-var CL_FRC = /(?:did\snot|didn[’']t)\s(?:authorize|atpt|req|grant|access|allow|make)|\bdo\snot\s(?:respond|reply)|no[-\s]reply|(?:not\s|un)(?:monitor|attend)ed|void\swhere\sprohibited|no\scash\svalue|not\scombinable|(?:about|check\sout|connect|download|chat|reach\sout)\s?(?:with|the|our|to|)\s?(?:new\s|)(?:us|help|support|(?:mobile\s|)app\b|web[ -]?(?:site|page))|free\s(?:trial|membership|subscription|month|post|article|account|sample|gift)|(?:secure|change|reset|(?:re|)view|manage|adjust|modify|update|\bedit)\s(?:your|the|my|)\s?(?:account|communications?|notifications?|subscription|membership|profile|security|password|(?:email\s|)preferences?|settings|options|activity)|(?:you\s*(?:[’']ve|have|are|)\s*(?:(?:receiv|got)(?:ed|ing))|forwarded|was\s*(?:this|these)\s*(?:electronic\smessage\s|)(?:email|message|notification|notice|transmission|communication)s?\s*(?:because|is|was|(?:may\s*|)contains?|forwarded\sto\syou|in\serror))|offer\s(?:only|)\s?valid|not\scombinable|cannot\sbe\scombined|fees\s(?:may|)\s?apply|use\sthereof|terms\s(?:of|and|&)\s(?:use|sale|conditions)|(?:privacy|confidentiality)\s*(?:and|&)?\s*(?:policy|notice|statement|practices|(?:and|&)\ssecurity)|(named|intended)\s*(?:(?:only\s)?for|recipient|to\s*be(?:\s*for|))/i;
+var CL_FRC = /(?:did\snot|didn[’']t)\s(?:authorize|atpt|req|grant|access|allow|make)|\bdo\snot\s(?:respond|reply)|no[-\s]reply|(?:not\s|un)(?:monitor|attend)ed|void\swhere\sprohibited|no\scash\svalue|not\scombinable|(?:about|check\sout|connect|download|chat|reach\sout)\s?(?:with|the|our|to|)\s?(?:new\s|)(?:us|help|support|(?:mobile\s|)app\b|web[ -]?(?:site|page))|free\s(?:trial|membership|subscription|month|post|article|account|sample|gift)|(?:secure|change|reset|(?:re|)view|manage|adjust|modify|update|\bedit)\s(?:your|the|my|)\s?(?:account|communications?|notifications?|subscription|membership|profile|security|password|(?:email\s|)preferences?|settings|options|activity)|(?:you\s*(?:[’']ve|have|are|)\s*(?:(?:receiv|got)(?:ed|ing))|forwarded|was\s*(?:this|these)\s*(?:electronic\smessage\s|)(?:email|message|notification|notice|transmission|communication)s?\s*(?:because|is|was|(?:may\s*|)contains?|forwarded\sto\syou|in\serror))|offer\s(?:only|)\s?valid|not\scombinable|cannot\sbe\scombined|fees\s(?:may|)\s?apply|use\sthereof|\Bterms\s(?:of|and|&)\s(?:use|sale|conditions)|(?:privacy|confidentiality)\s*(?:and|&)?\s*(?:policy|notice|statement|practices|(?:and|&)\ssecurity)|(named|intended)\s*(?:(?:only\s)?for|recipient|to\s*be(?:\s*for|))/i;
 var CL_HFF = /forward(?:ed|)\sthis\s(?:to\syou|)\s?(?:message|email|post|newsletter|article)/i;
 var CL_HR = /(?:view|read|see|open)\s(?:this|)\s?(?:email|post|article|message|web|in)\s?(?:[oi]n|as|)\s?(?:the|a|)[\s\-](?:line|app|web|version|browser)|web\s*version/i;
 var CL_JSN = /```$/;
@@ -61,7 +61,7 @@ var CL_SJ = /^\s*(re|fwd?)\s*:\s*/i;
 var CL_SC = /Facebook|TikTok|Threads|Instagram|Bluesky|Reddit|Linkedin|Discord|Twitter|\bX\b|YouTube/i;
 var CL_SC2 = /Share|Like|Heart|Restack|Comment|Forward/;
 var CL_SDR = /([\w ]+ from )/i;
-var CL_TSC = /(<\/?\b(?:br|table|tr|th|tbody|thead|td|li|figure|figcaption|button|p|div|h\d|ol|ul|li|p|div|h\d|ul|li|ol)\b\s*[^>]*?\s*\/?>)/gi;
+var CL_TSC = /(<\/?\b(?:br|table|tr|th|tbody|thead|td|li|figure|figcaption|button|p|div|h\d|ol|ul|li|p|div|h\d|ul|li|ol|blockquote)\b\s*[^>]*?\s*\/?>)/gi;
 var CL_TGS = / +([\/;"]?) *>/g;
 var CL_UDD = /[\u{2013}\u{2212}\u{00AD}]/gu;
 var CL_UDL = /[\p{Zp}\u{000A}\u{000d}\u{0085}\u{2028}\u{2029}\u{0000}-\u{0018}\u{001A}-\u{001F}]/gu;
@@ -93,7 +93,7 @@ var M_SLT = /(?:class\saction|legal)\ssettlement/i;
 var M_TBK = /<((?:[^<>]+?[\n\r]+[^<>]+?)+[\n\r]*?\/?)>/g;
 var M_TKN = /[a-z]{4,}/g;
 var P_ACN = /[\S\s]*?/;
-var P_ACR = /[\S\s]+?/;
+var P_ACR = /[\S\s]+/;
 var P_AC1 = /(.*?)/;
 var P_ALB = /[\n\r]/g;
 var P_ALR = /[A-Za-z]/;
@@ -105,7 +105,7 @@ var P_DCD = /(?: |%)/;
 var P_DSH = /-{0,2}/;
 var P_DTP = /!DOCTYPE/i;
 var P_EJ = /(?![®©™])[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu;
-var P_EML = /[\w@\.\-_\s<>\/\\"=:]+/;
+var P_EML = /[A-Za-z\s<>@\.]+/;
 var P_LB = /\n/g;
 var P_LS = /[\n\r>]/;
 var P_LE = /[\n\r<]/;
@@ -113,6 +113,7 @@ var P_LRN = /[A-Za-z0-9]/g;
 var P_MD = /[\*_]/;
 var P_MDH = /#{1,3}.*?(?:\s*\w|#{1,3})/g;
 var P_NTG = /[^<>]*?/;
+var P_NU2 = /\d{1,2}/;
 var P_PCT = /[,:\?!@\(\);<>\/\\=\|]/;
 var P_SEQ = /\s*=\s*/;
 var P_STB = /[ \t]*/;
@@ -153,13 +154,13 @@ var CL_CMT = new RegExp(`<!(?${P_DTP.source})${P_DSH.source} *\\[?${P_CMI.source
 var CL_DTY = new RegExp(`<${P_WS.source}${P_DTP.source}${P_NTG.source}>`, `i`);
 var CL_XBT = new RegExp(`(${P_ATG.source})>`, `g`);
 var CL_HDN = new RegExp(`<(?<tag>(?!br)\\w+)${P_WS.source}${P_NTG.source}(?:aria-hidden="true"|style=")${P_NTG.source}(?:[^-]color:${P_WS.source}transparent|display:${P_WS.source}none|(?:(?:line|max)-?(?:height|width)|(?<!-)(?:height|weight)|font-size|opacity):${P_WS.source}(?:0|calc\(?<pct>[\\d[a-zA-Z%]+)${P_WS.source}-${P_WS.source}\\k<pct>\\)|mso-hide:${P_WS.source}all|visibility:${P_WS.source}hidden))${P_TSX.source}${P_NTG.source}<\\/\\k<tag>>`, `gi`);
-var CL_HDS = new RegExp(`<(?<tag>\\w+)${P_WS.source}${P_NTG.source}(?:aria-hidden="true"|style=")${P_NTG.source}(?:[^-]color:\\s?transparent|display:${P_WS.source}none|(?:(?:line|max)-?(?:height|width)|(?<!-)(?:height|weight)|font-size|opacity):${P_WS.source}(?:0|calc(?<pct>[\\d[a-zA-Z%]+)${P_WS.source}-${P_WS.source}\\k<pct>\\)|mso-hide:\\s?all|visibility:\\s?hidden))${P_NTG.source} ?\\/>`, `gi`);
-var CL_MD = new RegExp(`${P_MD.source}{1,3}([\\S\\s]+?)${P_MD.source}{1,3}`, `g`);
+var CL_HDS = new RegExp(`<(?<tag>\\w+)${P_WS.source}${P_NTG.source}(?:aria-hidden="true"|style=")${P_NTG.source}(?:[^-]color:${P_WS.source}transparent|display:${P_WS.source}none|(?:(?:line|max)-?(?:height|width)|(?<!-)(?:height|weight)|font-size|opacity):${P_WS.source}(?:0|calc(?<pct>[\\d[a-zA-Z%]+)${P_WS.source}-${P_WS.source}\\k<pct>\\)|mso-hide:${P_WS.source}all|visibility:${P_WS.source}hidden))${P_NTG.source} ?\\/>`, `gi`);
+var CL_MD = new RegExp(`${P_MD.source}{1,3}(${P_ACR.source}?)${P_MD.source}{1,3}`, `g`);
 var CL_MBD = new RegExp(`${P_MD.source}{2}${P_AC1.source}${P_MD.source}{2}`, `g`);
 var CL_MBT = new RegExp(`${P_MD.source}{3}${P_AC1.source}${P_MD.source}{3}`, `g`);
 var CL_MIT = new RegExp(`${P_MD.source}${P_AC1.source}${P_MD.source}`, `g`);
 var CL_MSK = new RegExp(`~~${P_AC1.source}~~`, "g");
-var CL_PVS = new RegExp(`(${P_LS.source})(?:(?:(?:(?:On(?:\\s${P_ULL.source}{1,5},)?\\s${P_ULL.source}{1,10}\\s\\d{1,2},\\s\\d{4},?\\s(?:at\\s)?\\d{1,2}:\\d{1,2}(?:\\:\\d{1,2})?\\s[AP]M(?:\\s[A-Z]{3})?,?\\s${P_EML.source}\\swrote${P_WS.source})|(?:(?:(?:Begin\\s|${P_WS.source}-{2,10}${P_WS.source})[Ff]orwarded|[Oo]riginal)\\s[Mm]essage))(?:${P_WS.source}-{2,6}${P_WS.source}|:))|(?:${P_BDO.source}|)From${P_WS.source}${P_EML.source})${P_LE.source}${P_ACN.source}$`);
+var CL_PVS = new RegExp(`\\b(?:On${P_WS.source}(?:${P_NU2.source}${P_WS.source})?(?:Jan|Feb|March|April|May|June|July|Aug|Sept|Oct|Nov|Dec)\\.?(?:${P_WS.source}${P_NU2.source},?)?${P_WS.source}\\d{4}(?:\\sat)?${P_WS.source}${P_NU2.source}:\\d{2}${P_WS.source}[AaPp][Mm],?${P_WS.source}${P_EML.source}\\swrote:|(?:(?:(?:Begin${P_WS.source}|${P_WS.source}-{2,10}${P_WS.source})[Ff]orwarded|[Oo]riginal)${P_WS.source}[Mm]essage)(?:${P_WS.source}-{2,6}${P_WS.source}|:)|(?:${P_BDO.source})?From)${P_ACR.source}$`);
 var CL_TFG = new RegExp(`<(figure|figcaption)${P_TSX.source}${P_ACN.source}${P_TCC.source}`, `gi`);
 var CL_TFR = new RegExp(`fr-original-style${P_SEQ.source}"[^">]*(?:"[^">]*"[^">]*)*"`, `gi`);
 var CL_TDE = new RegExp(`${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}(?<ej1>${P_WS.source}(?:${P_EJ.source}|${P_BL.source}))${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}`, `gui`);
@@ -172,9 +173,9 @@ var F_NU = new RegExp(`([0-9]{1,2}\\.)${P_WS.source}${P_ALB.source}+${P_WS.sourc
 var F_PNC = new RegExp(`(${P_ALR.source}+)\\s+([\\.!\\?,])`, `g`);
 var F_SBP = new RegExp(`<\\b(sub|sup)\\b${P_TSX.source}(${P_NTG.source})${P_TCC.source}`, `gi`);
 var F_TSP = new RegExp(`(<\\/?${P_NTG.source})${P_WS.source}(${P_ALB.source}+${P_WS.source}>)`, `gi`);
-var M_IGA = new RegExp(`<img${P_NTG.source}alt${P_SEQ.source}"([\\w\\p{P} ]+?)"\\s*${P_NTG.source}>`, `gui`);
-var M_LBL = new RegExp(`<ul${P_TSX.source}(${P_ACR.source})<\\/ul>`, `gi`);
-var M_LNU = new RegExp(`<ol${P_TSX.source}(${P_ACR.source})<\\/ol>`, `gi`);
+var M_IGA = new RegExp(`<img${P_NTG.source}alt${P_SEQ.source}"([\\w\\p{P} ]+?)"${P_WS.source}${P_NTG.source}>`, `gui`);
+var M_LBL = new RegExp(`<ul${P_TSX.source}(${P_ACR.source}?)<\\/ul>`, `gi`);
+var M_LNU = new RegExp(`<ol${P_TSX.source}(${P_ACR.source}?)<\\/ol>`, `gi`);
 var M_OPC = new RegExp(`^${P_PCT.source}+$`);
 
 // FONTS //
@@ -186,10 +187,10 @@ var bkbry = `<font color="#200055">`, rsbry = `<font color="#3f00ab">`, stbry = 
 var eOA = `${rsbry}OpenAI encountered an error. Please try again later.${cFt}`;
 var fBt = `🗑️ ${stbry}This message is full of junk and can't be summarized without timing out. Sorry about that.${cFt}`;
 var fNC = `${rsbry}It looks like this message has no content. I'll just take a little nap until the next one. 😴${cFt}`;
-var fNCT = `${rsbry}The top message in this thread is too short to summarize. Try another one.`;
 var fSm = `${stbry}🚨 <b>STOP!! 🚨<br /><em>This email is likely a scam!</em><br /></b>(Contains hidden "dummy" text)<br />🔻 <b>DON'T</b> click any links.<br /><b>🔻 DON'T</b> open any attachments.<br />🔻 <b>REPORT</b> the email to your provider.<br />🔻 <b>DELETE </b> the email immediately.${cFt}`;
 var fSz = `${stbry}This email is too large to process without timing out. Try another one.${cFt}`;
 var fWc = `${rsbry}By the time you finish reading this sentence, you could have already read that email, so just read it.${cFt}`;
+var fWcT = `${rsbry}The top message in this thread is too short to summarize. Try another one.`;
 var lBl = `\n   - `;
 var lHSm = `🛑 FILTER: 🚨 SCAM! 🚨 (SNEAKY HIDDEN TEXT) 🚨 🛑`;
 var lNP = `🛑 FILTER: NO PLAIN TEXT - USING HTML 🛑`;
@@ -390,24 +391,20 @@ function cPL(rwP, wdC) {
 }
 
 function exH(raw) {
-  if (nNl(raw)) { return ""; };
-  raw = String(raw || "");
-  let htm = M_HTM.exec(raw) || "";
-  htm = htm ? htm[1] : "";
-  return htm;
+  let out = String(raw || ""), htm;
+  if (nNl(out)) { return raw; };
+  if (M_HTM.test(out)) {
+    htm = M_HTM.exec(out) || "";
+    return htm[1];
+  } else { return raw; };
 }
 
 function exP(raw) {
-  let scP = false, out = raw;
-  if (nNl(raw)) { return ""; };
-  raw = String(raw || "");
-  let pA = M_PAF.exec(raw) || "";
+  const out = String(raw || "");
+  let pA = M_PAF.exec(out);
+  pA = pA[1].replace(P_ATG, "").trim();
   const pAt = M_OTG.test(pA[1]), pAW = cWd(pA[1]);
-  pA = pAt ? "" : pA[1].replace(P_ATG, "").trim();
-  if (nNl(pA[1]) || pAt || pAW === 0) {
-    scP = false; out = "";
-  } else { scP = true; out = pA };
-  return { scP, raP: out };
+  return (pAt || pAW === 0) ? raw : pA;
 }
 
 function cHC(htm, clL) {
@@ -417,6 +414,7 @@ function cHC(htm, clL) {
   }  
   let out = String(htm || "");
   const isTh = CL_PVS.test(out);
+  console.log(`THREAD? ${isTh}`);
   out = out.replace(CL_PVS, "$1");
   const chs = [
     [fxT, "f", "fxT"],        [CL_TSC, "\n\n", "CL_TSC"],    [CL_HDN, "", "CL_HDN"],     [CL_HDS, "", "CL_HDS"],
@@ -473,14 +471,13 @@ function cHF(src, stl) {
   let txt = src.trim();
   const lns = sHF(txt).filter(ln => !M_OTG.test(ln[0])).filter(ln => !M_OPC.test(ln[0])),
   noLs = lns.length, hEd = Math.min((noLs * 0.3), noLs),
-  fSt = Math.max(hEd,noLs-(noLs * 0.6)),
-  bdy = jHF(lns.slice(hEd, fSt)).replace(F_PRD, "."),
+  fSt = Math.max(hEd,noLs-(noLs * 0.6)), bdy = jHF(lns.slice(hEd, fSt)).replace(F_PRD, "."),
   hFr = jHF(lns.slice(fSt));
   let hdr = lns.slice(0, hEd), ftr = lns.slice(fSt);
   hdr = hdr.map(ln => [ln[0].replace(P_ATG, "").replace(F_PRD, "."), ln[1]]);
   ftr = ftr.map(ln => [ln[0].replace(P_ATG, "").replace(F_PRD, "."), ln[1]]);
   const wdC = cWd(jHF(hdr) + `\n` + bdy +`\n` + jHF(ftr));
-  if (dev) { console.log(`📐 PRECLEAN WORD COUNT: ${wdC}\n\n📐 LINES: ${noLs}`); };
+  if (dev) { console.log(`📐 PRECLEAN WORD COUNT: ${wdC}\n📐 LINES: ${noLs}`); };
   if (wdC < 30) { return { txt, hFr: "" }; };
   if (hdr.some(ln => CL_HR.test(ln[0]))) {
     if (dev) { console.log(`🗣️ HEADER MATCH(ES) 🗣️:\n${hdr.filter(ln => CL_HR.test(ln[0]))}`); };
@@ -581,7 +578,7 @@ function cnF(clH, clP, mpH, isT) {
     console.log(`🧱 PLAIN TEXT LINE BREAK DENSITY: ${lbD}`);
   }
   if (nH && nP) {
-    fm = isT ? fNCT : fNC;
+    fm = isT ? fWcT : fNC;
     r = isT ? `TOP MESSAGE <= 5 WORDS` : rNC;
     if (dev) { `🛑 FILTER: NO CONTENT ${r}` };
     return { h: false, p: false, fm }
@@ -593,7 +590,7 @@ function cnF(clH, clP, mpH, isT) {
     { t: pTp, r: `PLACEHOLDER/TEMPLATE (${pTp})` }, { t: noN, r: `LINE BREAK DENSITY (${lbD})` }
   ];
   const rt = rls.find(rl => rl.t); if (rt) { r = rt.r };
-  if (!h && !p) { fm = isT ? fNCT : fNC; };
+  if (!h && !p) { fm = isT ? fWcT : fNC; };
   if (dev && (!h || !p)) {
     console.log(`🛑 FILTER: ` + (v ? v : 'NO CONTENT') + ` ${r} - SKIPPING SCAM CHECK 🛑`);
   }
@@ -708,61 +705,74 @@ function gMg(e) {
   date = msg.getDate() ? Utilities.formatDate(msg.getDate(), Session.getScriptTimeZone(), "M/d/yyyy h:mm a") : "",
   sbj = String(msg.getSubject() || "").replace(CL_SJ, "").trim(),
   sdr = cSr(dMg(msg.getFrom() || "unknown"));
-  const dta = { mId, date, sbj, sdr };
-  const { sjH, stl } = sbH(sbj);
+  rwCn = msg.getBody() || "", rwPn = msg.getPlainBody();
+  const dta = { mId, date, sbj, sdr, rwCn, rwPn };
+  if (dbg) { console.log(`🆗 COMPLETED: gMg 🆗`); };
+  return dta;
+}
+
+function pMg(e) {
+  const dta = gMg(e);
+  let fm, mCn, clH, clP, wdC, prM, clL = "HTML", rwC = dta.rwCn;
+  const { sjH, stl } = sbH(dta.sbj);
   if (sjH !== null) {
     if (dev) { console.log(`📧 SUBJECT HINT:\n${sjH}`); };
     return { ...dta, sjH: sjH };
   }
-  let fm, rwCn = msg.getBody() || "";
-  if (szF(rwCn, 1024000, "RAW")) { return { ...dta, fm: fZ }; };
-  if (btF(rwCn.substring(10000, 20000))) { return { ...dta, fm: fBt }; };
-  rwCn = dMg(rwCn);
-  const rwH = exH(rwCn);
+  if (szF(rwC, 1024000, "RAW")) { return { ...dta, fm: fZ }; };
+  if (btF(rwC.substring(10000, 20000))) { return { ...dta, fm: fBt }; };
+  rwC = dMg(rwC);
+  const scH = M_HTM.test(rwC), scP = M_PAF.test(rwC);
+  if (dev) { console.log(`❓ COMPLETE HTML? ${scH}\n❓ MISPLACED PLAIN TEXT? ${scP}`); };
+  const rwH = scH ? exH(rwC) : rwC, rwP = scP ? exP(rwC) : dMg(dta.rwPn);
   if (M_SCH.test(rwH)) { if (dev) { console.log(lHSm); }; return { ...dta, fm: fSm }; };
-  const { scP, raP } = exP(rwCn);
-  if (dev) { console.log(`❓ SCAM PLAIN TEXT? ${scP} ❓`); };
-  const rwP = scP ? raP : dMg(msg.getPlainBody());
   const hWc = cWd(rwH), pWc = cWd(rwP);
-  if (hWc < 5 && pWc < 5) { return { ...date, fm: fNC }; };
-  let clH, clP, clL = "HTML";
+  if (hWc < 5 && pWc < 5) { return { ...dta, fm: fNC }; };
   ({ out: clH, cMs, cWs, isTh } = cHC(rwH, clL));
   clH = clH.replace(CL_DTY, "");
   const mpH = CL_DTY.test(rwP) ? true : false;
-  clL = "Plain Text"; ({ cnP, isTp } = cPC(rwP, clL));
+  clL = "Plain Text";
+  ({ cnP, isTp } = cPC(rwP, clL));
   clP = !mpH ? cnP : clH;
   const isT = (isTh || isTp) ? true : false;
   ({ h, p, fm: fm } = cnF(clH, clP, mpH, isT));
   if (!h && !p) { return { ...dta, fm: fm }; };
-  if (h && p && dSm(clH, clP)) {
-    if (dev) { console.log(lSm); }; return { ...dta, fm: fSm };
-  }
+  if (h && p && dSm(clH, clP)) { if (dev) { console.log(lSm); }; return { ...dta, fm: fSm }; };
   const useH = h && !p ? true : false;
   if (useH && dev) { console.log(lNP); };
-  let pMg = useH ? clH : clP;
-  pMg = pMg.replace(P_EJ, "");
-  wdC = cWd(pMg);
-  if (dev) { ckL("📝 PRECLEAN CONTENT", pMg); };
-  if (wcF(wdC)) { if (dev) { console.log(`${lWc} (PRECLEAN) 🛑`); }; return { ...dta, fm: fWc }; };
-  let mgCn = cHF(pMg, stl); wdC = cUW(mgCn);
+  prM = useH ? clH : clP;
+  prM = prM.replace(P_EJ, "");
+  wdC = cWd(prM);
+  if (dev) { ckL("📝 PRECLEAN CONTENT", prM); };
+  if (wcF(wdC)) {
+    if (dev) { console.log(`${lWc} (PRECLEAN) 🛑`); };
+    fm = isT ? fWcT : fWc;
+    return { ...dta, fm };
+  }
+  mCn = cHF(prM, stl);
+  wdC = cUW(mCn);
   if (dev) {
     console.log(`📐 ☙UNIQUE❧ WORD COUNT: ${wdC}`);
-    ckL(`📝 POSTCLEAN CONTENT`, mgCn);
+    ckL(`📝 POSTCLEAN CONTENT`, mCn);
   }
-  if (wcF(wdC)) { if (dev) { console.log(`${lWc} (FINAL) 🛑`); }; return { ...dta, fm: fWc }; };
-  sz = szF(mgCn, 512000, "FINAL");
+  if (wcF(wdC)) {
+    if (dev) { console.log(`${lWc} (FINAL) 🛑`); };
+    fm = isT ? fWcT : fWc;
+    return { ...dta, fm };
+  }
+  sz = szF(mCn, 512000, "FINAL");
   if (dbg) { console.log(`🆗 COMPLETED: gMg 🆗`); };
-  return { ...dta, mgCn: mgCn, wdC: wdC, sjH: sjH };
+  return { ...dta, mCn: mCn, wdC: wdC, sjH: sjH };
 }
 
-function uPt(mgCn, sbj, sdr, aHnt, wcH) {
+function uPt(mCn, sbj, sdr, aHnt, wcH) {
   return [`
     SUBJECT: ${sbj}
     SENDER: ${sdr}
     `+ (aHnt ? `APPOINTMENT HINT: While summarizing, keep in mind the content is regarding an appointment with this status: ${aHnt}.` : ``) +`
 
     CONTENT:
-    ${mgCn}
+    ${mCn}
 
     INSTRUCTIONS:
 
@@ -906,7 +916,7 @@ function oAC({ system = null, user, jsonSchema = null, model = "gpt-4.1-mini" })
   Utilities.sleep(delay);
 }
 
-function sumz(mgCn, sbj, sdr, wdC, sjH) {
+function sumz(mCn, sbj, sdr, wdC, sjH) {
   let aHnt;
   const apptA = APT_A.exec(sbj), apptT = APT_T.exec(sbj);
   if (apptA && apptT) {
@@ -917,7 +927,7 @@ function sumz(mgCn, sbj, sdr, wdC, sjH) {
   if (wcH && dev) {
     console.log(`🛑 FILTER: WORD COUNT (${wdC}) - ONE-SENTENCE SUMMARY 🛑`)
   }
-  const uPmt = uPt(mgCn, sbj, sdr, aHnt, wcH),
+  const uPmt = uPt(mCn, sbj, sdr, aHnt, wcH),
   sPmt = sPt(sbj, sdr, sjH); let res;
   if (sjH) {
     res = oAC({
@@ -944,11 +954,12 @@ function onHomepage(e) {
 
 function onGmailMessageOpen(e) {
   try {
-    var dta = gMg(e); if (!dta) { return onHomepage(e); };
+    var dta = pMg(e);
+    if (!dta) { return onHomepage(e); };
     if (dta.fm) {
       return bCd(dta.fm, dta.sbj, dta.sdr, dta.date, dta.mId, null, true);
     }
-    let out = cSm(sumz(dta.mgCn, dta.sbj, dta.sdr, dta.wdC, dta.sjH));
+    let out = cSm(sumz(dta.mCn, dta.sbj, dta.sdr, dta.wdC, dta.sjH));
     out = out.replace(P_LB, " ");
     if (dbg) { console.log(`🆗 COMPLETED: onGmailMessageOpen 🆗`); };
     return bCd(out, dta.sbj, dta.sdr, dta.date, dta.mId, null, false);
