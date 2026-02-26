@@ -745,7 +745,7 @@ function pMg(e) {
   const mpH = CL_DTY.test(rwP) ? true : false;
   if (mpH) { clP = clP.replace(P_ATG, ""); };
   const isT = (isTh || isTp) ? true : false;
-  ckL(`📝 HTML`, clH); ckL(`📝 PLAIN TEXT`, clP);
+  if (dbg) { ckL(`📝 HTML`, clH); ckL(`📝 PLAIN TEXT`, clP); };
   ({ h, p, fm: fm } = cnF(clH, clP, isT));
   if (!h && !p) { return { ...dta, fm }; };
   if (h && p && dSm(clH, clP)) {
