@@ -2,7 +2,7 @@
 
 // LOG DEBUG SWITCHES //
 
-const dev = false, dbg = false, dCl = false;
+const dev = true, dbg = false, dCl = false;
 
 // CACHED API KEY //
 
@@ -106,7 +106,7 @@ var P_DCD = /(?: |%)/;
 var P_DSH = /-{0,2}/;
 var P_DTP = /!DOCTYPE/i;
 var P_EJ = /(?![®©™])[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu;
-var P_EML = /[A-Za-z\s<>@\.]+/;
+var P_EML = /[A-Za-z\s<>@\.\/:="]+/;
 var P_LB = /\n/g;
 var P_LS = /[\n\r>]/;
 var P_LE = /[\n\r<]/;
@@ -114,7 +114,8 @@ var P_LRN = /[A-Za-z0-9]/g;
 var P_MD = /[\*_]/;
 var P_MDH = /#{1,3}.*?(?:\s*\w|#{1,3})/g;
 var P_NTG = /[^<>]*?/;
-var P_NU2 = /\d{1,2}/;
+var P_N12 = /\d{1,2}/;
+var P_NU2 = /\d{2}/;
 var P_PCT = /[,:\?!@\(\);<>\/\\=\|]/;
 var P_SEQ = /\s*=\s*/;
 var P_STB = /[ \t]*/;
@@ -162,7 +163,7 @@ var CL_MBD = new RegExp(`${P_MD.source}{2}${P_AC1.source}${P_MD.source}{2}`, `g`
 var CL_MBT = new RegExp(`${P_MD.source}{3}${P_AC1.source}${P_MD.source}{3}`, `g`);
 var CL_MIT = new RegExp(`${P_MD.source}${P_AC1.source}${P_MD.source}`, `g`);
 var CL_MSK = new RegExp(`~~${P_AC1.source}~~`, "g");
-var CL_PVS = new RegExp(`\\b(?:On${P_WS.source}(?:${P_NU2.source}${P_WS.source})?(?:(?:Jan|Febr?)(?:uary|)|March|April|May|June|July|Aug(?:ust|)|(?:Sept|Nov|Dec)(?:ember|)|Oct(?:ober|))\\.?(?:${P_WS.source}\\d{1,2})?,?${P_WS.source}\\d{4}(?:${P_WS.source}at)?${P_WS.source}${P_NU2.source}:\\d{2}(?::\\d{2})?${P_WS.source}[AaPp][Mm](?:${P_WS.source}[A-Z]{3})?,?${P_WS.source}${P_EML.source}${P_WS.source}wrote:|(?:(?:(?:Begin${P_WS.source}|${P_WS.source}-{2,10}${P_WS.source})[Ff]orwarded|[Oo]riginal)${P_WS.source}[Mm]essage)(?:${P_WS.source}-{2,6}${P_WS.source}|:)|\n(?:${P_BDO.source})?From:\s${P_EML.source}\n)${P_ACR.source}$`);
+var CL_PVS = new RegExp(`\\b(?:On\\s*(?:Mon|Tues|Wed|Thurs|Fri|Sat|Sun)(?:day)?,?\\s*(?:${P_N12.source}\\s*)?(?:(?:Jan|Febr?)(?:uary)?|March|April|May|June|July|Aug(?:ust)?|(?:Sept|Nov|Dec)(?:ember)?|Oct(?:ober|))\\.?(?:\\s*${P_N12.source})?,?\\s*\\d{4}(?:\\s*at)?\\s*${P_N12.source}:${P_N12.source}(?::${P_N12.source})?\\s*[AaPp][Mm](?:\\s*[A-Z]{3})?,?\\s*${P_EML.source}\\s*wrote:|(?:(?:(?:Begin\\s*|\\s*-{2,10}\\s*)[Ff]orwarded|[Oo]riginal)\\s*[Mm]essage)(?:\\s*-{2,6}\\s*|:)|\\n(?:${P_BDO.source})?From:\\s*${P_EML.source}\\n)${P_ACR.source}$`);
 var CL_TFG = new RegExp(`<(figure|figcaption)${P_TSX.source}${P_ACN.source}${P_TCC.source}`, `gi`);
 var CL_TFR = new RegExp(`fr-original-style${P_SEQ.source}"[^">]*(?:"[^">]*"[^">]*)*"`, `gi`);
 var CL_TDE = new RegExp(`${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}(?<ej1>${P_WS.source}(?:${P_EJ.source}|${P_BL.source}))${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}`, `gui`);
@@ -189,7 +190,7 @@ var stbry = `<font color="#ff0060">`;
 
 // MESSAGES //
 
-var eOA = `${rsbry}OpenAI encountered an error. Please try again later.${cFt}`;
+var eOA = `${stbry}OpenAI encountered an error. Please try again later.${cFt}`;
 var fBt = `🗑️ ${stbry}This message is full of junk and can't be summarized without timing out. Sorry about that.${cFt}`;
 var fNC = `${rsbry}It looks like this message has no content. I'll just take a little nap until the next one. 😴${cFt}`;
 var fNT = `${rsbry}The top message in this thread is too short to summarize. Try another one.`;
