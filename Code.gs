@@ -2,7 +2,7 @@
 
 // LOG DEBUG SWITCHES //
 
-const dev = true, dbg = false, dCl = false;
+const dev = false, dbg = false, dCl = false;
 
 // CACHED API KEY //
 
@@ -106,7 +106,7 @@ var P_DCD = /(?: |%)/;
 var P_DSH = /-{0,2}/;
 var P_DTP = /!DOCTYPE/i;
 var P_EJ = /(?![®©™])[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu;
-var P_EML = /[A-Za-z\s<>@\.\/:="]+/;
+var P_EML = /[A-Za-z\d\s<>@\.\/:="]+/;
 var P_LB = /\n/g;
 var P_LS = /[\n\r>]/;
 var P_LE = /[\n\r<]/;
@@ -163,7 +163,7 @@ var CL_MBD = new RegExp(`${P_MD.source}{2}${P_AC1.source}${P_MD.source}{2}`, `g`
 var CL_MBT = new RegExp(`${P_MD.source}{3}${P_AC1.source}${P_MD.source}{3}`, `g`);
 var CL_MIT = new RegExp(`${P_MD.source}${P_AC1.source}${P_MD.source}`, `g`);
 var CL_MSK = new RegExp(`~~${P_AC1.source}~~`, "g");
-var CL_PVS = new RegExp(`\\b(?:On\\s*(?:Mon|Tues|Wed|Thurs|Fri|Sat|Sun)(?:day)?,?\\s*(?:${P_N12.source}\\s*)?(?:(?:Jan|Febr?)(?:uary)?|March|April|May|June|July|Aug(?:ust)?|(?:Sept|Nov|Dec)(?:ember)?|Oct(?:ober|))\\.?(?:\\s*${P_N12.source})?,?\\s*\\d{4}(?:\\s*at)?\\s*${P_N12.source}:${P_N12.source}(?::${P_N12.source})?\\s*[AaPp][Mm](?:\\s*[A-Z]{3})?,?\\s*${P_EML.source}\\s*wrote:|(?:(?:(?:Begin\\s*|\\s*-{2,10}\\s*)[Ff]orwarded|[Oo]riginal)\\s*[Mm]essage)(?:\\s*-{2,6}\\s*|:)|\\n(?:${P_BDO.source})?From:\\s*${P_EML.source}\\n)${P_ACR.source}$`);
+var CL_PVS = new RegExp(`\\b(?:On\\s*(?:(?:Mon|Tues|Wed|Thurs|Fri|Sat|Sun)(?:day)?)?,?\\s*(?:${P_N12.source}\\s*)?(?:(?:Jan|Febr?)(?:uary)?|March|April|May|June|July|Aug(?:ust)?|(?:Sept|Nov|Dec)(?:ember)?|Oct(?:ober|))\\.?(?:\\s*${P_N12.source})?,?\\s*\\d{4}(?:\\s*at)?\\s*${P_N12.source}:${P_N12.source}(?::${P_N12.source})?\\s*[AaPp][Mm](?:\\s*[A-Z]{3})?,?\\s*${P_EML.source}\\s*wrote:|(?:(?:(?:Begin\\s*|\\s*-{2,10}\\s*)[Ff]orwarded|[Oo]riginal)\\s*[Mm]essage)(?:\\s*-{2,6}\\s*|:)|\\n(?:${P_BDO.source})?From:\\s*${P_EML.source}\\n)${P_ACR.source}$`);
 var CL_TFG = new RegExp(`<(figure|figcaption)${P_TSX.source}${P_ACN.source}${P_TCC.source}`, `gi`);
 var CL_TFR = new RegExp(`fr-original-style${P_SEQ.source}"[^">]*(?:"[^">]*"[^">]*)*"`, `gi`);
 var CL_TDE = new RegExp(`${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}(?<ej1>${P_WS.source}(?:${P_EJ.source}|${P_BL.source}))${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}`, `gui`);
@@ -404,6 +404,7 @@ function cHC(htm, clL) {
     return { out: htm, cMs: false, cWs: false, thH: false };
   }  
   let out = String(htm || "");
+  ckL(`BEFORE VPS`, out);
   const thH = CL_PVS.test(out);
   out = out.replace(CL_PVS, "$1");
   const chs = [
@@ -796,25 +797,34 @@ function uPt(mCn, sbj, sdr, aHnt, wcH) {
     
     **IMPORTANT: NEVER leave out pronouns, conjunctions, or definite articles to shorten the summary! ALWAYS prioritize naturalness/clarity, NOT thoroughness/details.**
 
-    DON'T use formal/academic language, jargon, or slang not used in the content. When in doubt, use exact wording.
+    DON'T use formal/academic language, jargon, or slang not used in the content. Your priority is writing in the same tone, style, voice, and tense as the content. When in doubt, use EXACT wording.
 
     **NEVER preface your summary with a preamble to satisfy the active voice requirement!**
-    DON'T DO THIS: "I explain..."  "I outline..." "I recommend..." "we offer..." "we highlight..." "we share..." If you're thinking of using a preamble, STOP. Instead, look at the first sentences in the paragraph in the content and use them as guides to write your sentence.
+    DON'T DO THIS: "I explain..."  "I outline..." "I recommend..." "I offer..." "we highlight..." "we share..." OR ANYTHING SIMILAR TO THOSE PHRASES. This is not an exhaustive list! Just becuase it's not on the list doesn't mean you can use it!
     
-    Provide context for anything you reference in your summary. Anyone should be able to read the summary and understand it without reading the content. Be specific. Instead of "the conference," "the study," "the initiative," use: "the Write the Docs Conference," "the GLP-1 study," "the employee engagement iniative..."
+    If you're thinking of using a preamble, **STOP! DON'T! DELETE IT!**
+    Instead, look at the first paragraph in the content and use it as a guide to write your summary. Copy exact text from the content.
+    
+    ***ALWAYS prioritize using the *EXACT SAME* TONE, VOICE, STYLE, and TENSE as the content!***
+    
+    Provide context for anything you reference in your summary. Anyone should be able to read the summary and understand it without reading the content.
+    **Be specific.** Provide the minimal background information to ensure your summary makes sense.
 
     The content is your ONLY source of truth. *NEVER* fabricate, exaggerate, or elaborate ANY information. ONLY summarize what's actually in the content. When in doubt, LEAVE IT OUT.
     
     EXAMPLES:
 
-    ❌ WRONG: "We offer a remote writer job...", "We seek a writer for a remote job..."
-    ✅ RIGHT: "We are hiring for a remote writer job...", "We are looking for a writer for a remote job..."
+    ❌ WRONG: "I'm offering a free visibility snapshot...", "I offer a free visibility snapshot..."
+    ✅ RIGHT: "I'd love to provide you with a complimentary visibility snapshot." - This is an exact quote from the content.
+
+    ❌ WRONG: "I offer a remote writer job...", "We seek a writer for a remote job..."
+    ✅ RIGHT: "I'm hiring for a remote writer job...", "We are looking for a writer for a remote job..."
 
     ❌ WRONG: "We highlight the latest news...", "We shared the latest research..."
     ✅ RIGHT: Just say what the latest news/research is.
 
-    ❌ WRONG: "We recommend focused, concise alt text."
-    ✅ RIGHT: Re-write to add context: ` + (wcH ? `"Writing alt text can be difficult, which is why we recommend keeping it focused and concise."` : `"Alt text can be difficult to write well. We recommend keeping it focused and concise."`)].join('\n');
+    ❌ WRONG: "I'm recommending focused, concise alt text."
+    ✅ RIGHT: Re-write to add context: ` + (wcH ? `"Writing alt text can be difficult, which is why I recommend keeping it focused and concise."` : `"Alt text can be difficult to write well. I recommend keeping it focused and concise."`)].join('\n');
 }
 
 function sPt(sbj, sdr, sjH) {
@@ -913,15 +923,15 @@ function oAC({ system = null, user, jsonSchema = null, model = "gpt-4.1-mini" })
       }
       if (dbg) { console.log(`🆗 COMPLETED: oAC 🆗`); };
       if (jsonSchema) {
-        if (jsn == null) { throw new Error(eOA); };
+        if (jsn == null) { const err = new Error(eOA); err.oa = txt; throw err; };
         return { ok: true, json: jsn, raw: dta };
       } else {
-        if (!out.trim()) { throw new Error(eOA); };
+        if (!out.trim()) { const err = new Error(eOA); err.oa = txt; throw err; };
         return { ok: true, text: out.trim(), raw: dta };
       }
-    } catch(e) {
-      console.log(`⚠️ EXCEPTION ON ATTEMPT ${atp + 1}: ${e.message}`);
-      if (atp === MX_RTY - 1) { throw e; };
+    } catch (e) {
+      console.log(`⚠️ EXCEPTION ON ATTEMPT ${atp + 1}: ${e.oa}`);
+      if (e.oa.includes('"insufficient_quota"') || atp === MX_RTY - 1) { throw e; };
     }
   }
   const delay = 500 * Math.pow(2, atp) + Math.random() * 1000;
