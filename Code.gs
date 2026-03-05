@@ -118,6 +118,7 @@ var P_N12 = /\d{1,2}/;
 var P_NU2 = /\d{2}/;
 var P_PCT = /[,:\?!@\(\);<>\/\\=\|]/;
 var P_SEQ = /\s*=\s*/;
+var P_SPC = /[:!\.\?,]/;
 var P_STB = /[ \t]*/;
 var P_TCC = /<\/\1>/;
 var P_TSX = /[^>\/]*?>/;
@@ -154,10 +155,10 @@ var T_TNS = /transaction|deposit|transfer|request/i;
 
 var CL_CLB = new RegExp(`(?:${P_STB.source}${P_ALB.source})+${P_STB.source}|[ \\t]{8,}`, `g`);
 var CL_CMT = new RegExp(`<!(?${P_DTP.source})${P_DSH.source} *\\[?${P_CMI.source}\\]? *${P_DSH.source}>${P_DSH.source}>?|\\/\\*\\[?${P_CMI.source}\\*\\/|^ *${P_CMI.source} *-{2}>$`, `gim`)
-var CL_DTY = new RegExp(`<${P_WS.source}${P_DTP.source}${P_NTG.source}>`, `i`);
+var CL_DTY = new RegExp(`<\\s*${P_DTP.source}${P_NTG.source}>`, `i`);
 var CL_XBT = new RegExp(`(${P_ATG.source})>`, `g`);
-var CL_HDN = new RegExp(`<(?<tag>(?!br)\\w+)${P_WS.source}${P_NTG.source}(?:aria-hidden="true"|style=")${P_NTG.source}(?:[^-]color:${P_WS.source}transparent|display:${P_WS.source}none|(?:(?:line|max)-?(?:height|width)|(?<!-)(?:height|weight)|font-size|opacity):${P_WS.source}(?:0|calc\(?<pct>[\\d[a-zA-Z%]+)${P_WS.source}-${P_WS.source}\\k<pct>\\)|mso-hide:${P_WS.source}all|visibility:${P_WS.source}hidden))${P_TSX.source}${P_NTG.source}<\\/\\k<tag>>`, `gi`);
-var CL_HDS = new RegExp(`<(?<tag>\\w+)${P_WS.source}${P_NTG.source}(?:aria-hidden="true"|style=")${P_NTG.source}(?:[^-]color:${P_WS.source}transparent|display:${P_WS.source}none|(?:(?:line|max)-?(?:height|width)|(?<!-)(?:height|weight)|font-size|opacity):${P_WS.source}(?:0|calc(?<pct>[\\d[a-zA-Z%]+)${P_WS.source}-${P_WS.source}\\k<pct>\\)|mso-hide:${P_WS.source}all|visibility:${P_WS.source}hidden))${P_NTG.source} ?\\/>`, `gi`);
+var CL_HDN = new RegExp(`<(?<tag>(?!br)\\w+)\\s*${P_NTG.source}(?:aria-hidden="true"|style=")${P_NTG.source}(?:[^-]color:\\s*transparent|display:\\s*none|(?:(?:line|max)-?(?:height|width)|(?<!-)(?:height|weight)|font-size|opacity):\\s*(?:0|calc\(?<pct>[\\d[a-zA-Z%]+)\\s*-\\s*\\k<pct>\\)|mso-hide:\\s*all|visibility:\\s*hidden))${P_TSX.source}${P_NTG.source}<\\/\\k<tag>>`, `gi`);
+var CL_HDS = new RegExp(`<(?<tag>\\w+)\\s*${P_NTG.source}(?:aria-hidden="true"|style=")${P_NTG.source}(?:[^-]color:\\s*transparent|display:\\s*none|(?:(?:line|max)-?(?:height|width)|(?<!-)(?:height|weight)|font-size|opacity):\\s*(?:0|calc(?<pct>[\\d[a-zA-Z%]+)\\s*-\\s*\\k<pct>\\)|mso-hide:\\s*all|visibility:\\s*hidden))${P_NTG.source} ?\\/>`, `gi`);
 var CL_MD = new RegExp(`${P_MD.source}{1,3}(${P_ACR.source}?)${P_MD.source}{1,3}`, `g`);
 var CL_MBD = new RegExp(`${P_MD.source}{2}${P_AC1.source}${P_MD.source}{2}`, `g`);
 var CL_MBT = new RegExp(`${P_MD.source}{3}${P_AC1.source}${P_MD.source}{3}`, `g`);
@@ -166,18 +167,18 @@ var CL_MSK = new RegExp(`~~${P_AC1.source}~~`, "g");
 var CL_PVS = new RegExp(`\\b(?:On\\s*(?:(?:Mon|Tues|Wed|Thurs|Fri|Sat|Sun)(?:day)?)?,?\\s*(?:${P_N12.source}\\s*)?(?:(?:Jan|Febr?)(?:uary)?|March|April|May|June|July|Aug(?:ust)?|(?:Sept|Nov|Dec)(?:ember)?|Oct(?:ober|))\\.?(?:\\s*${P_N12.source})?,?\\s*\\d{4}(?:\\s*at)?\\s*${P_N12.source}:${P_N12.source}(?::${P_N12.source})?\\s*[AaPp][Mm](?:\\s*[A-Z]{3})?,?\\s*${P_EML.source}\\s*wrote:|(?:(?:(?:Begin\\s*|\\s*-{2,10}\\s*)[Ff]orwarded|[Oo]riginal)\\s*[Mm]essage)(?:\\s*-{2,6}\\s*|:)|\\n(?:${P_BDO.source})?From:\\s*${P_EML.source}\\n)${P_ACR.source}$`);
 var CL_TFG = new RegExp(`<(figure|figcaption)${P_TSX.source}${P_ACN.source}${P_TCC.source}`, `gi`);
 var CL_TFR = new RegExp(`fr-original-style${P_SEQ.source}"[^">]*(?:"[^">]*"[^">]*)*"`, `gi`);
-var CL_TDE = new RegExp(`${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}(?<ej1>${P_WS.source}(?:${P_EJ.source}|${P_BL.source}))${P_WS.source}<\\/?td${P_TSX.source}${P_WS.source}(?:<\\/?td${P_TSX.source})?${P_WS.source}`, `gui`);
+var CL_TDE = new RegExp(`\\s*<\\/?td${P_TSX.source}\\s*(?:<\\/?td${P_TSX.source})?\\s*(?<ej1>\\s*(?:${P_EJ.source}|${P_BL.source}))\\s*<\\/?td${P_TSX.source}\\s*(?:<\\/?td${P_TSX.source})?\\s*`, `gui`);
 var CL_TDT = new RegExp (`<\\/?td${P_TSX.source}`, `gui`);
 var D_LB = new RegExp(`(?:\\r|${CL_UDL.source})`, `gu`);
 var D_LTR = new RegExp(`&(${P_ALR.source}${P_LRN.source}+);?`, `g`);
 var D_MD = new RegExp(`${P_DCD.source}?96`, `g`);
 var F_CMS = new RegExp(`(${P_ALR.source}),(${P_ALR.source})`, `g`);
-var F_NU = new RegExp(`([0-9]{1,2}\\.)${P_WS.source}${P_ALB.source}+${P_WS.source}(${P_ALR.source})`, `g`);
+var F_NU = new RegExp(`([0-9]{1,2}\\.)\\s*${P_ALB.source}+\\s*(${P_ALR.source})`, `g`);
 var F_PNC = new RegExp(`(${P_ALR.source}+)\\s+([\\.!\\?,])`, `g`);
 var F_SBP = new RegExp(`<\\b(sub|sup)\\b${P_TSX.source}(${P_NTG.source})${P_TCC.source}`, `gi`);
-var F_SLB = new RegExp(`(?<![:!\\.\\?,]|${P_BL.source}) *${P_ALB.source} *(?![A-Z]|${P_BL.source}|\\d+?\\s[A-Z])`, `g`);
-var F_TSP = new RegExp(`(<\\/?${P_NTG.source})${P_WS.source}(${P_ALB.source}+${P_WS.source}>)`, `gi`);
-var M_IGA = new RegExp(`<img${P_NTG.source}alt${P_SEQ.source}"([\\w\\p{P} ]+?)"${P_WS.source}${P_NTG.source}>`, `gui`);
+var F_SLB = new RegExp(`(?<!${P_SPC.source}|${P_BL.source}) *${P_ALB.source} *(?! *(?:[A-Z]|${P_BL.source}|${P_EJ.source}|\\d+?\\s[A-Z]))`, `gu`);
+var F_TSP = new RegExp(`(<\\/?${P_NTG.source})\\s*(${P_ALB.source}+\\s*>)`, `gi`);
+var M_IGA = new RegExp(`<img${P_NTG.source}alt${P_SEQ.source}"([\\w\\p{P} ]+?)"\\s*${P_NTG.source}>`, `gui`);
 var M_LBL = new RegExp(`<ul${P_TSX.source}(${P_ACR.source}?)<\\/ul>`, `gi`);
 var M_LNU = new RegExp(`<ol${P_TSX.source}(${P_ACR.source}?)<\\/ol>`, `gi`);
 
@@ -238,7 +239,8 @@ function ckL(lb, dta) {
   const txt = (typeof dta === 'object') ? JSON.stringify(dta, null, 2) : String(dta);
   const sz = 4000; let c = 0;
   for (let i = 0; i < txt.length; i += sz) {
-    c++; console.log(`${lb} CHUNK ${c} of ${Math.ceil(txt.length / sz)}:\n${txt.substring(i, i + sz)}`);
+    c++;
+    console.log(`${lb} CHUNK ${c} of ${Math.ceil(txt.length / sz)}:\n${txt.substring(i, i + sz)}`);
   }
 }
 
@@ -249,7 +251,11 @@ function rRx(out, chs, clL) {
       if (dbg) { console.log(`🆗 COMPLETED: ${l} 🆗`) };
       if (dCl) { ckL(`🐞🐞 AFTER ${clL} ${l} 🐞🐞`, clp(out)); };
     });
-  } else { chs.forEach(([p, r]) => { out = (r === "f") ? p(out) : out.replace(p, r); }); };
+  } else {
+    chs.forEach(([p, r]) => {
+      out = (r === "f") ? p(out) : out.replace(p, r);
+    });
+  }
   if (dbg) { console.log(`🆗 COMPLETED: ${clL} rRx 🆗`) };
   return out;
 }
@@ -263,9 +269,10 @@ function cTC(num) {
 
 function dMg(src) {
   const ENT = {
-    amp: "&", apos: "'", bull: "•", copy: "©", gt: ">", hellip: "…", laquo: "«", lsquo: "'", ldquo: '"', lt: "<",
-    mdash: "—", middot: "·", nbsp: " ", ndash: "-", newline: "\n", ntilde: "ñ", ordm: "°", quot: '"', raquo: "»",
-    rarr: "→", reg: "®", rsaquo: "›", rsquo: "'", rdquo: '"', shy: "", times: "×", trade: "™", zwnj: ""
+    amp: "&", apos: "'", bull: "•", copy: "©", gt: ">", hellip: "…", laquo: "«", lsquo: "'",
+    ldquo: '"', lt: "<", mdash: "—", middot: "·", nbsp: " ", ndash: "-", newline: "\n",
+    ntilde: "ñ", ordm: "°", quot: '"', raquo: "»", rarr: "→", reg: "®", rsaquo: "›",
+    rsquo: "'", rdquo: '"', shy: "", times: "×", trade: "™", zwnj: ""
   },
   RGX1 = [ [D_QPB, ""], [D_QPC, "%$1"] ],
   RGX2 = [
@@ -314,7 +321,9 @@ function fxT(src) {
 }
 
 function cHS(htm) {
-  const tgs = [ { o: `<head`, c: `</head>`, l: 7 }, { o: `<style`, c: `</style>`, l: 8 } ];
+  const tgs = [
+    { o: `<head`, c: `</head>`, l: 7 }, { o: `<style`, c: `</style>`, l: 8 }
+  ];
   tgs.forEach(tg => {
     const lcH = lCs(htm); let res = "", i = 0;
     while (i < htm.length) {
@@ -390,21 +399,25 @@ function cPL(rwP, wdC) {
 
 function xHP(raw) {
   lIx(P_ATG);
-  const out = String(raw || ""), fh = M_HTM.exec(out), pA = M_PAF.exec(out);
+  const out = String(raw || ""), fh = M_HTM.exec(out),
+  pA = M_PAF.exec(out);
   const xH = nNl(fh) ? raw : fh[1].trim();
   let xP = nNl(pA) ? null : pA[1].trim();
-  if (nNl(xP) || (cWd(xP) < (cWd(xH) / 4)) || P_ATG.test(xP)) { xP = null; };
+  if (nNl(xP) || (cWd(xP) < (cWd(xH) / 4)) || P_ATG.test(xP)) {
+    xP = null;
+  }
   if (dbg) { console.log(`📝 EXTRACTED PLAIN TEXT:\n${xP}`); };
   return { xH, xP };
 }
 
 function cHC(htm, clL) {
   if (nNl(htm)) {
-    if (dbg) { console.log(`🛑 NO HTML: SKIPPING HTML CLEANING 🛑`); };
+    if (dbg) {
+      console.log(`🛑 NO HTML: SKIPPING HTML CLEANING 🛑`);
+    }
     return { out: htm, cMs: false, cWs: false, thH: false };
   }  
   let out = String(htm || "");
-  ckL(`BEFORE VPS`, out);
   const thH = CL_PVS.test(out);
   out = out.replace(CL_PVS, "$1");
   const chs = [
@@ -423,7 +436,9 @@ function cHC(htm, clL) {
 
 function cPC(ptx, clL) {
   if (nNl(ptx)) {
-    if (dbg) { console.log(`🛑 NO PLAIN TEXT: SKIPPING PLAIN CLEANING 🛑`); };
+    if (dbg) {
+      console.log(`🛑 NO PLAIN TEXT: SKIPPING PLAIN CLEANING 🛑`);
+    }
     return { out: ptx, thP: false };
   }
   let out = String(ptx || "");
@@ -459,7 +474,14 @@ function sHF(txt) {
 
 function cLT(txt) { return CL_LLN.test(txt); };
 function fLn(ln, rx) { return ln.filter(w => rx.test(w)) };
-function jHF(cks) { let jd = ""; for (let i = 0; i < cks.length; i++) { jd += cks[i][0] + cks[i][1]; }; return jd; };
+
+function jHF(cks) {
+  let jd = "";
+  for (let i = 0; i < cks.length; i++) {
+    jd += cks[i][0] + cks[i][1];
+  }
+  return jd;
+}
 
 function fxS(txt) {
   const ps = [". ", "! ", "? "];
@@ -478,9 +500,14 @@ function mSI(l1, l2) {
     l1 = [...new Set(l1)];
     if (l1.length > 0) {
       if (l1.length > 1) { lMc = true; };
-      if (l2.length > 0) { l2 = [...new Set(l2)]; if (l2.length > 0) { lMc = true; }; };
+      if (l2.length > 0) {
+        l2 = [...new Set(l2)];
+        if (l2.length > 0) { lMc = true; };
     }
-    if (dev && lMc) { console.log(`🌐 SOCIAL MATCH(ES) 🌐:${tb}${l1}${tb}${l2}`); };
+    }
+    if (dev && lMc) {
+      console.log(`🌐 SOCIAL MATCH(ES) 🌐:${tb}${l1}${tb}${l2}`);
+    }
   }
   return lMc;
 }
@@ -498,7 +525,9 @@ function cHF(src, stl) {
   const hps = [CL_HR, CL_HFF];
   hps.forEach(hp => {
     if (hdr.some(ln => hp.test(ln[0]))) {
-      if (dev) { console.log(`🗣️ HEADER MATCH(ES) 🗣️:\n${hdr.filter(ln => hp.test(ln[0]))}`); };
+      if (dev) {
+        console.log(`🗣️ HEADER MATCH(ES) 🗣️:\n${hdr.filter(ln => hp.test(ln[0]))}`);
+      }
       hdr = hdr.filter(ln => !hp.test(ln[0]));
   }
   });
@@ -519,34 +548,47 @@ function cHF(src, stl) {
           console.log(`🏠 ADDRESS MATCH(ES): ${tb}${mA1}` + (mA2 ? `${tb}${mA2}` : '') + (mA3 ? `${tb}${mA3}` : ''));
           }
           if (mA2) {
-          if (mA3) { lLs.splice(i,3); } else if (!mA3 || aL2 === lLn) { lLs.splice(i,2); };
+          if (mA3) {
+            lLs.splice(i,3);
+          } else if (!mA3 || aL2 === lLn) {
+            lLs.splice(i,2);
+          }
         } else { lLs.splice(i); };
-      } else if ((!mA2 && !mA3) || aL1 === lLn) { lLs.splice(i); };
+      } else if ((!mA2 && !mA3) || aL1 === lLn) {
+        lLs.splice(i);
+      }
       }
     }
   let sMc = false, iMc = false;
   for (let j = 0; j < lLs.length; j++) {
-    const l1 = (String(lLs[j]).trim()).split(S_WS);
-    const l2 = (String(lLs[j + 1]).trim()).split(S_WS);
+    const l1 = (String(lLs[j]).trim()).split(S_WS),
+    l2 = (String(lLs[j + 1]).trim()).split(S_WS);
       if (l1.length === 0 && l2.length === 0) { break; };
-    const sM1 = fLn(l1, CL_SC), sM2 = fLn(l2, CL_SC), iM1 = fLn(l1, CL_SC2), iM2 = fLn(l2, CL_SC2);
+    const sM1 = fLn(l1, CL_SC), sM2 = fLn(l2, CL_SC),
+    iM1 = fLn(l1, CL_SC2), iM2 = fLn(l2, CL_SC2);
     sMc = mSI(sM1, sM2); iMc = mSI(iM1, iM2);
     if (sMc || iMc) { break; };
       }
   const lps = [CL_SC, CL_SC2];
-  if (sMc || iMc) { lps.forEach(lp => { lLs = lLs.filter(ln => !lp.test(ln[0])); }); };
+  if (sMc || iMc) {
+    lps.forEach(lp => { lLs = lLs.filter(ln => !lp.test(ln[0])); });
+  }
   if (lLs.some(ln => cLT(ln[0]))) {
       if (dev) {
       console.log(`🔚 LAST LINES MATCH(ES) 🔚:\n${lLs.filter(ln => cLT(ln[0]))}`);
       }
     lLs = lLs.filter(ln => !cLT(ln[0]));
     }
-  if (!stl) { lLs = lLs.map(ln => [ln[0].replace(CL_OPT, ""), ln[1]]); };
+  if (!stl) {
+    lLs = lLs.map(ln => [ln[0].replace(CL_OPT, ""), ln[1]]);
+  }
   ftr = (nNl(lLs)) ? fLs : fLs.concat(lLs);
   const sF = jHF(ftr), fps = [CL_FR, CL_FRB, CL_FRC, CL_HFF];
   fps.forEach(fp => {
     if (ftr.some(ln => fp.test(ln[0]))) {
-      if (dev) { console.log(`👣 FOOTER MATCHES 👣:\n${ftr.filter(ln => fp.test(ln[0]))}`); };
+      if (dev) {
+        console.log(`👣 FOOTER MATCHES 👣:\n${ftr.filter(ln => fp.test(ln[0]))}`);
+      }
       ftr = ftr.filter(ln => !fp.test(ln[0]));
     }
     });
@@ -579,14 +621,19 @@ function wcF(wdC) { return wdC <= 150; };
 
 function cnF(clH, clP, isT) {
   let h = true, p = true, r = "", v = "", fm = isT ? fNT : fNC;
-  const hWc = cWd(clH), pWc = cWd(clP), lg = isT ? rNT : rNC, pTp = M_NOP.exec(clP);
-  const hLW = hWc < 5, pLW = pWc < 5, lbD = rd2(pWc / clP.split("\n").length), nLb = ((lbD > 40) || !P_ALB.test(clP));
+  const hWc = cWd(clH), pWc = cWd(clP), lg = isT ? rNT : rNC,
+  pTp = M_NOP.exec(clP), hLW = hWc < 5, pLW = pWc < 5,
+  lbD = rd2(pWc / clP.split("\n").length),
+  nLb = ((lbD > 40) || !P_ALB.test(clP));
   if (dev) {
     console.log(`🚰 CONTENT FILTER: 🚰${tb}H WORD COUNT: ${hWc}${tb}P WORD COUNT: ${pWc}${tb}LINE BREAK DENSITY: ${lbD}`);
   }
   if (nNl(clH) || hLW) { h = false; v = `HTML`; };
   if (nNl(clP) || pLW || pTp || nLb) { p = false; v = `PLAIN TEXT`; };
-  if (!h && !p) { if (dev) { console.log(`🛑 ${lg} 🛑`); }; return { h: false, p: false, fm }; };
+  if (!h && !p) { if (dev) {
+    console.log(`🛑 ${lg} 🛑`); };
+    return { h: false, p: false, fm };
+  }
   if (!h || !p) {
     const rns = [
       { c: hLW || pLW, r: rWc },
@@ -594,7 +641,9 @@ function cnF(clH, clP, isT) {
       { c: pTp, r: `PLACEHOLDER/TEMPLATE (${pTp})` },
     ];
     rns.forEach(rn => { if (rn?.c) { r = rn.r; }; });
-    if (dev) { console.log(`🛑 ${v} ${lg} (${r}): SKIPPING SCAM CHECK 🛑`); };
+    if (dev) {
+      console.log(`🛑 ${v} ${lg} (${r}): SKIPPING SCAM CHECK 🛑`);
+    }
   }
   return { h, p, fm };
 }
@@ -603,9 +652,17 @@ function szF(src, td, lb) {
   const txt = String(src || "");
   let sz = txt.length, unt = `B`;
   const kb = 1024, mb = 1048576, bMg = (sz > td) ? true : false;
-  if (sz > kb) { if (sz > mb) { sz = sz / mb; unt = `MB` } else { sz = sz / kb; unt = `KB`; }; };
+  if (sz > kb) {
+    if (sz > mb) {
+      sz = sz / mb; unt = `MB`;
+    } else {
+      sz = sz / kb; unt = `KB`;
+    }
+  }
   const mSz = rd2(sz) + ` ` + unt;
-  if (dev) { console.log(bMg ? `🛑 ${lb} MSG. SIZE (${mSz}) 🛑` : `📐 ${lb} SIZE: ${mSz}`); };
+  if (dev) {
+    console.log(bMg ? `🛑 ${lb} MSG. SIZE (${mSz}) 🛑` : `📐 ${lb} SIZE: ${mSz}`);
+  }
   return bMg;
 }
 
@@ -627,13 +684,14 @@ function btF(raw) {
 function dSm(clH, clP) {
   let scm = false, hMC = 0, pMC = 0;
   clH = stp(clH); clP = stp(clP);
-  const gTk = (txt) => new Set(lCs(String(txt || "")).match(M_TKN) || []);
-  const hTk = gTk(clH), pTk = gTk(clP);
+  const gTk = (txt) => new Set(lCs(String(txt || "")).match(M_TKN) || []),
+  hTk = gTk(clH), pTk = gTk(clP);
   hTk.forEach(token => { if (pTk.has(token)) hMC++; });
   pTk.forEach(token => { if (hTk.has(token)) pMC++; });
-  const htS = hTk.size, ptS = pTk.size, hSi = htS ? (hMC / htS) : 0;
-  const pSi = ptS ? (pMC / ptS) : 0, smM = Math.min(hMC, pMC), smT = Math.min(htS, ptS);
-  const incl = Math.abs(smM - smT) < 3, min = hMC > pMC ? `HTML` : `PLAIN TEXT`;
+  const htS = hTk.size, ptS = pTk.size, hSi = htS ? (hMC / htS) : 0,
+  pSi = ptS ? (pMC / ptS) : 0, smM = Math.min(hMC, pMC),
+  smT = Math.min(htS, ptS), incl = Math.abs(smM - smT) < 3,
+  min = hMC > pMC ? `HTML` : `PLAIN TEXT`;
   if (hSi < 0.4 && pSi < 0.4 && !incl) { scm = true; };
   if (dev) {
     console.log(`🔎 INCLUDES: 🔎${tb}TOTAL TOKENS (${min}) = ${smT}${tb}MATCHED TOKENS = ${smM}${tb}INCLUDES? ${incl}`);
@@ -719,7 +777,9 @@ function pMg(e) {
   }
   let fm, mCn, clH, clP, stl, rwC = dta.rwCn;
   if (szF(rwC, 1024000, "RAW")) { return { ...dta, fm: fSz }; };
-  if (btF(rwC.substring(10000, 20000))) { return { ...dta, fm: fBt }; };
+  if (btF(rwC.substring(10000, 20000))) {
+    return { ...dta, fm: fBt };
+  }
   rwC = dMg(rwC); const cmpH = M_HTM.test(rwC);
   let { xH: rwH, xP: rwP } = xHP(rwC);
   rwH = cmpH ? rwH : rwC;
